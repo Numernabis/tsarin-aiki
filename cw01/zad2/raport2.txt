@@ -1,0 +1,127 @@
+
+#Compile
+gcc -o test main.c ../zad1/library.a -Wall -std=c99 -I.
+#Run tests
+#Dynamic
+./test 1000 100 D init find 5 change 50
+-------------------------------------
+array_size = 1000   block_size = 100
+allocation_method = dynamic
+-------------------------------------
+initialization:
+40000µs 2528000µs 2569137µs
+
+find closest to the given block:
+4000µs 928000µs 934511µs
+
+remove then add:
+0µs 132000µs 129921µs
+
+=====================================
+./test 1000 100 D init change 50 alt_change 50
+-------------------------------------
+array_size = 1000   block_size = 100
+allocation_method = dynamic
+-------------------------------------
+initialization:
+116000µs 2620000µs 2753527µs
+
+remove then add:
+8000µs 124000µs 132207µs
+
+alternately remove and add:
+4000µs 128000µs 134520µs
+
+=====================================
+./test 2000 300 D init change 8 find 40
+-------------------------------------
+array_size = 2000   block_size = 300
+allocation_method = dynamic
+-------------------------------------
+initialization:
+264000µs 14780000µs 15075833µs
+
+remove then add:
+0µs 60000µs 60102µs
+
+find closest to the given block:
+0µs 7900000µs 7902925µs
+
+=====================================
+./test 2000 300 D init alt_change 40 change 20
+-------------------------------------
+array_size = 2000   block_size = 300
+allocation_method = dynamic
+-------------------------------------
+initialization:
+212000µs 14904000µs 15127722µs
+
+alternately remove and add:
+0µs 300000µs 299467µs
+
+remove then add:
+0µs 152000µs 153189µs
+
+=====================================
+#Static
+./test 1000 100 S init find 5 change 50
+-------------------------------------
+array_size = 1000   block_size = 100
+allocation_method = static
+-------------------------------------
+initialization:
+60000µs 2420000µs 2483189µs
+
+find closest to the given block:
+0µs 936000µs 936593µs
+
+remove then add:
+12000µs 120000µs 128641µs
+
+=====================================
+./test 1000 100 S init change 50 alt_change 50
+-------------------------------------
+array_size = 1000   block_size = 100
+allocation_method = static
+-------------------------------------
+initialization:
+28000µs 2468000µs 2496780µs
+
+remove then add:
+0µs 132000µs 132351µs
+
+alternately remove and add:
+4000µs 124000µs 129318µs
+
+=====================================
+./test 2000 300 S init change 8 find 40
+-------------------------------------
+array_size = 2000   block_size = 300
+allocation_method = static
+-------------------------------------
+initialization:
+176000µs 14568000µs 14745987µs
+
+remove then add:
+0µs 64000µs 66919µs
+
+find closest to the given block:
+0µs 7820000µs 7828047µs
+
+=====================================
+./test 2000 300 S init alt_change 40 change 20
+-------------------------------------
+array_size = 2000   block_size = 300
+allocation_method = static
+-------------------------------------
+initialization:
+144000µs 14628000µs 14776049µs
+
+alternately remove and add:
+12000µs 288000µs 297429µs
+
+remove then add:
+0µs 152000µs 152266µs
+
+=====================================
+rm -f *.o

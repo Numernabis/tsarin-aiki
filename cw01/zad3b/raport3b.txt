@@ -1,0 +1,716 @@
+#With static library
+gcc -o test -D STATIC ../zad2/main.c ../zad1/library.a -Wall -std=c99 -I. -O0
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+108000µs 6224000µs 6336324µs
+
+remove then add:
+40000µs 5040000µs 5077519µs
+
+find closest to the given block:
+0µs 4408000µs 4410174µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+152000µs 6420000µs 6587438µs
+
+alternately remove and add:
+20000µs 3780000µs 3806286µs
+
+remove then add:
+16000µs 2516000µs 2545266µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+76000µs 6184000µs 6267317µs
+
+remove then add:
+40000µs 4952000µs 4993406µs
+
+find closest to the given block:
+4000µs 4372000µs 4386853µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+28000µs 6184000µs 6215465µs
+
+alternately remove and add:
+20000µs 3740000µs 3760559µs
+
+remove then add:
+4000µs 2492000µs 2495022µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With shared library
+gcc -o test -D SHARED ../zad2/main.c -L. ../zad1/liblibrary.so -Wall -std=c99 -I. -O0
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+116000µs 6092000µs 6210488µs
+
+remove then add:
+52000µs 4904000µs 4960764µs
+
+find closest to the given block:
+0µs 4368000µs 4370921µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+92000µs 6080000µs 6203259µs
+
+alternately remove and add:
+36000µs 3660000µs 3696461µs
+
+remove then add:
+32000µs 2464000µs 2493570µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+56000µs 6052000µs 6109337µs
+
+remove then add:
+56000µs 4852000µs 4911395µs
+
+find closest to the given block:
+0µs 4368000µs 4367872µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+40000µs 6076000µs 6118182µs
+
+alternately remove and add:
+28000µs 3636000µs 3664627µs
+
+remove then add:
+20000µs 2408000µs 2426762µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With dynamic library
+gcc -o test -D DYNAMIC ../zad2/main.c -Wall -std=c99 -I. -ldl -O0
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+128000µs 6100000µs 6231127µs
+
+remove then add:
+64000µs 4912000µs 4975898µs
+
+find closest to the given block:
+0µs 4516000µs 4518322µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+96000µs 6120000µs 6226108µs
+
+alternately remove and add:
+40000µs 3656000µs 3697331µs
+
+remove then add:
+16000µs 2464000µs 2483212µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+52000µs 5984000µs 6039417µs
+
+remove then add:
+44000µs 4800000µs 4843246µs
+
+find closest to the given block:
+0µs 4328000µs 4327235µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+60000µs 5952000µs 6014729µs
+
+alternately remove and add:
+52000µs 3604000µs 3654198µs
+
+remove then add:
+28000µs 2396000µs 2423755µs
+
+=====================================
+
+================================================================================================================================================
+
+#With static library
+gcc -o test -D STATIC ../zad2/main.c ../zad1/library.a -Wall -std=c99 -I. -O1
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+148000µs 2032000µs 2193491µs
+
+remove then add:
+40000µs 1728000µs 1767568µs
+
+find closest to the given block:
+0µs 4452000µs 4461202µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+132000µs 2044000µs 2179013µs
+
+alternately remove and add:
+20000µs 1260000µs 1279913µs
+
+remove then add:
+28000µs 844000µs 869786µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+76000µs 1960000µs 2038165µs
+
+remove then add:
+56000µs 1588000µs 1645158µs
+
+find closest to the given block:
+4000µs 4344000µs 4347848µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+44000µs 1988000µs 2043700µs
+
+alternately remove and add:
+20000µs 1200000µs 1227065µs
+
+remove then add:
+44000µs 824000µs 875297µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With shared library
+gcc -o test -D SHARED ../zad2/main.c -L. ../zad1/liblibrary.so -Wall -std=c99 -I. -O1
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+160000µs 2116000µs 2289334µs
+
+remove then add:
+52000µs 1804000µs 1856427µs
+
+find closest to the given block:
+8000µs 4344000µs 4359083µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+96000µs 2172000µs 2282319µs
+
+alternately remove and add:
+32000µs 1308000µs 1340113µs
+
+remove then add:
+32000µs 880000µs 912456µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+64000µs 2068000µs 2132280µs
+
+remove then add:
+40000µs 1668000µs 1710036µs
+
+find closest to the given block:
+4000µs 4344000µs 4346336µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+36000µs 2104000µs 2141209µs
+
+alternately remove and add:
+40000µs 1256000µs 1296391µs
+
+remove then add:
+20000µs 844000µs 862784µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With dynamic library
+gcc -o test -D DYNAMIC ../zad2/main.c -Wall -std=c99 -I. -ldl -O1
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+104000µs 2192000µs 2312433µs
+
+remove then add:
+52000µs 1784000µs 1845381µs
+
+find closest to the given block:
+4000µs 4372000µs 4402432µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+132000µs 2164000µs 2313847µs
+
+alternately remove and add:
+56000µs 1312000µs 1377128µs
+
+remove then add:
+20000µs 936000µs 964487µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+96000µs 2172000µs 2278486µs
+
+remove then add:
+24000µs 1716000µs 1739736µs
+
+find closest to the given block:
+0µs 4384000µs 4388426µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+44000µs 2104000µs 2151698µs
+
+alternately remove and add:
+48000µs 1260000µs 1305969µs
+
+remove then add:
+16000µs 844000µs 860379µs
+
+=====================================
+
+================================================================================================================================================
+
+#With static library
+gcc -o test -D STATIC ../zad2/main.c ../zad1/library.a -Wall -std=c99 -I. -Os
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+96000µs 4472000µs 4596668µs
+
+remove then add:
+56000µs 3616000µs 3692206µs
+
+find closest to the given block:
+4000µs 4456000µs 4470054µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+100000µs 4464000µs 4592579µs
+
+alternately remove and add:
+36000µs 2676000µs 2724549µs
+
+remove then add:
+12000µs 1816000µs 1833031µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+84000µs 4656000µs 4742817µs
+
+remove then add:
+48000µs 3580000µs 3627215µs
+
+find closest to the given block:
+0µs 4524000µs 4527485µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using static library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+48000µs 4496000µs 4551214µs
+
+alternately remove and add:
+20000µs 2664000µs 2685173µs
+
+remove then add:
+44000µs 1772000µs 1815073µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With shared library
+gcc -o test -D SHARED ../zad2/main.c -L. ../zad1/liblibrary.so -Wall -std=c99 -I. -Os
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+112000µs 4612000µs 4734773µs
+
+remove then add:
+8000µs 3764000µs 3799875µs
+
+find closest to the given block:
+4000µs 4488000µs 4503296µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+120000µs 4604000µs 4729301µs
+
+alternately remove and add:
+16000µs 2796000µs 2811614µs
+
+remove then add:
+36000µs 1892000µs 1935237µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+92000µs 4532000µs 4630002µs
+
+remove then add:
+56000µs 3540000µs 3596646µs
+
+find closest to the given block:
+4000µs 4360000µs 4362277µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+-------------->> Using shared library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+96000µs 4480000µs 4577995µs
+
+alternately remove and add:
+64000µs 2740000µs 2826626µs
+
+remove then add:
+100000µs 2084000µs 2252167µs
+
+=====================================
+
+make[1]: Leaving directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#With dynamic library
+gcc -o test -D DYNAMIC ../zad2/main.c -Wall -std=c99 -I. -ldl -Os
+make testset
+make[1]: Entering directory '/home/ludi/Pulpit/sysopy/CiechanskiLudwik/cw01/zad3b'
+#Tests - dynamic allocation
+./test 5000 500 D init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+136000µs 4680000µs 4819877µs
+
+remove then add:
+40000µs 3840000µs 3881298µs
+
+find closest to the given block:
+12000µs 4392000µs 4403316µs
+
+=====================================
+
+./test 5000 500 D init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = dynamic
+-------------------------------------
+initialization:
+136000µs 4584000µs 4721211µs
+
+alternately remove and add:
+76000µs 3292000µs 3406809µs
+
+remove then add:
+60000µs 2164000µs 2254574µs
+
+=====================================
+
+#Tests - static allocation
+./test 5000 500 S init change 4000 find 444
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+180000µs 5056000µs 5270780µs
+
+remove then add:
+144000µs 4068000µs 4252439µs
+
+find closest to the given block:
+12000µs 5056000µs 5120306µs
+
+=====================================
+
+./test 5000 500 S init alt_change 3000 change 2000
+-------------------------------------
+------------->> Using dynamic library
+-------------------------------------
+array_size = 5000   block_size = 500
+allocation_method = static
+-------------------------------------
+initialization:
+160000µs 5012000µs 5207601µs
+
+alternately remove and add:
+100000µs 3016000µs 3162706µs
+
+remove then add:
+32000µs 2100000µs 2165116µs
+
+=====================================
+
+krótki komentarz:
+porównywane 3 poziomy optymalizacji: -O0, -O1, -Os
+na poziomie 1 czasy wykonania testów są 2-3 razy krótsze niż na poziomie 0.
+natomiast poziom s daje ~20-25% przyspieszenia względem poziomu 0.
