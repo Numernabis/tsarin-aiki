@@ -52,11 +52,51 @@ sort_tests:
 	#File: 6000 x 512B
 	./program generate $(F)6k9 6000 512 sys
 	#Test: copying file
-	./program copy $(F)6k9 6k9s 6000 512 sys
-	./program copy $(F)6k9 6k9l 6000 512 lib
+	./program copy $(F)6k9 $(F)6k9s 6000 512 sys
+	./program copy $(F)6k9 $(F)6k9l 6000 512 lib
 	#Test: sorting file
 	./program sort $(F)6k9 6000 512 sys
 	./program sort $(F)6k9s 6000 512 lib
+
+	#----------------------------------
+	#File: 2000 x 4096B
+	./program generate $(F)2k12 2000 4096 sys
+	#Test: copying file
+	./program copy $(F)2k12 $(F)2k12s 2000 4096 sys
+	./program copy $(F)2k12 $(F)2k12l 2000 4096 lib
+	#Test: sorting file
+	./program sort $(F)2k12 2000 4096 sys
+	./program sort $(F)2k12s 2000 4096 lib
+
+	#----------------------------------
+	#File: 6000 x 4096B
+	./program generate $(F)6k12 6000 4096 sys
+	#Test: copying file
+	./program copy $(F)6k12 $(F)6k12s 6000 4096 sys
+	./program copy $(F)6k12 $(F)6k12l 6000 4096 lib
+	#Test: sorting file
+	./program sort $(F)6k12 6000 4096 sys
+	./program sort $(F)6k12s 6000 4096 lib
+
+	#----------------------------------
+	#File: 2000 x 8192B
+	./program generate $(F)2k13 2000 8192 sys
+	#Test: copying file
+	./program copy $(F)2k13 $(F)2k13s 2000 8192 sys
+	./program copy $(F)2k13 $(F)2k13l 2000 8192 lib
+	#Test: sorting file
+	./program sort $(F)2k13 2000 8192 sys
+	./program sort $(F)2k13s 2000 8192 lib
+
+	#----------------------------------
+	#File: 6000 x 8192B
+	./program generate $(F)6k13 6000 8192 sys
+	#Test: copying file
+	./program copy $(F)6k13 $(F)6k13s 6000 8192 sys
+	./program copy $(F)6k13 $(F)6k13l 6000 8192 lib
+	#Test: sorting file
+	./program sort $(F)6k13 6000 8192 sys
+	./program sort $(F)6k13s 6000 8192 lib
 
 clean:
 	rm -f *.o *.a

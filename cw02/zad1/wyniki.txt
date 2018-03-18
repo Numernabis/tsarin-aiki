@@ -1,0 +1,167 @@
+#----------------------------------
+#File: 2000 x 4B
+./program generate files/2k2 2000 4 sys
+#Test: copying file
+./program copy files/2k2 files/2k2s 2000 4 sys
+file copying [sys]:
+0µs 0µs
+
+./program copy files/2k2 files/2k2l 2000 4 lib
+file copying [lib]:
+0µs 0µs
+
+#Test: sorting file
+./program sort files/2k2 2000 4 sys
+file sorting [sys]:
+1360000µs 96000µs
+
+./program sort files/2k2s 2000 4 lib
+file sorting [lib]:
+2148000µs 368000µs
+
+#----------------------------------
+#File: 6000 x 4B
+./program generate files/6k2 6000 4 sys
+#Test: copying file
+./program copy files/6k2 files/6k2s 6000 4 sys
+file copying [sys]:
+12000µs 0µs
+
+./program copy files/6k2 files/6k2l 6000 4 lib
+file copying [lib]:
+0µs 0µs
+
+#Test: sorting file
+./program sort files/6k2 6000 4 sys
+file sorting [sys]:
+15824000µs 896000µs
+
+./program sort files/6k2s 6000 4 lib
+file sorting [lib]:
+18856000µs 2536000µs
+
+#----------------------------------
+#File: 2000 x 512B
+./program generate files/2k9 2000 512 sys
+#Test: copying file
+./program copy files/2k9 files/2k9s 2000 512 sys
+file copying [sys]:
+4000µs 0µs
+
+./program copy files/2k9 files/2k9l 2000 512 lib
+file copying [lib]:
+0µs 0µs
+
+#Test: sorting file
+./program sort files/2k9 2000 512 sys
+file sorting [sys]:
+1772000µs 80000µs
+
+./program sort files/2k9s 2000 512 lib
+file sorting [lib]:
+2080000µs 364000µs
+
+#----------------------------------
+#File: 6000 x 512B
+./program generate files/6k9 6000 512 sys
+#Test: copying file
+./program copy files/6k9 files/6k9s 6000 512 sys
+file copying [sys]:
+16000µs 0µs
+
+./program copy files/6k9 files/6k9l 6000 512 lib
+file copying [lib]:
+4000µs 0µs
+
+#Test: sorting file
+./program sort files/6k9 6000 512 sys
+file sorting [sys]:
+15648000µs 772000µs
+
+./program sort files/6k9s 6000 512 lib
+file sorting [lib]:
+20008000µs 3304000µs
+
+#----------------------------------
+#File: 2000 x 4096B
+./program generate files/2k12 2000 4096 sys
+#Test: copying file
+./program copy files/2k12 files/2k12s 2000 4096 sys
+file copying [sys]:
+4000µs 0µs
+
+./program copy files/2k12 files/2k12l 2000 4096 lib
+file copying [lib]:
+4000µs 4000µs
+
+#Test: sorting file
+./program sort files/2k12 2000 4096 sys
+file sorting [sys]:
+2648000µs 112000µs
+
+./program sort files/2k12s 2000 4096 lib
+file sorting [lib]:
+1992000µs 184000µs
+
+#----------------------------------
+#File: 6000 x 4096B
+./program generate files/6k12 6000 4096 sys
+#Test: copying file
+./program copy files/6k12 files/6k12s 6000 4096 sys
+file copying [sys]:
+20000µs 0µs
+
+./program copy files/6k12 files/6k12l 6000 4096 lib
+file copying [lib]:
+36000µs 4000µs
+
+#Test: sorting file
+./program sort files/6k12 6000 4096 sys
+file sorting [sys]:
+21000000µs 768000µs
+
+./program sort files/6k12s 6000 4096 lib
+file sorting [lib]:
+20912000µs 1596000µs
+
+#----------------------------------
+#File: 2000 x 8192B
+./program generate files/2k13 2000 8192 sys
+#Test: copying file
+./program copy files/2k13 files/2k13s 2000 8192 sys
+file copying [sys]:
+12000µs 0µs
+
+./program copy files/2k13 files/2k13l 2000 8192 lib
+file copying [lib]:
+24000µs 4000µs
+
+#Test: sorting file
+./program sort files/2k13 2000 8192 sys
+file sorting [sys]:
+4076000µs 136000µs
+
+./program sort files/2k13s 2000 8192 lib
+file sorting [lib]:
+4008000µs 240000µs
+
+#----------------------------------
+#File: 6000 x 8192B
+./program generate files/6k13 6000 8192 sys
+#Test: copying file
+./program copy files/6k13 files/6k13s 6000 8192 sys
+file copying [sys]:
+52000µs 0µs
+
+./program copy files/6k13 files/6k13l 6000 8192 lib
+file copying [lib]:
+56000µs 8000µs
+
+#Test: sorting file
+./program sort files/6k13 6000 8192 sys
+file sorting [sys]:
+38276000µs 956000µs
+
+./program sort files/6k13s 6000 8192 lib
+file sorting [lib]:
+43540000µs 2768000µs
