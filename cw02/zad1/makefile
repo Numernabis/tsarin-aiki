@@ -28,4 +28,4 @@ sort_tests:
 	./program sort $(F)1k2s 1000 4 lib
 
 clean:
-	rm -f *.o
+	rm -f *.o *.a
