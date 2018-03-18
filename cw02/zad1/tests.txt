@@ -1,0 +1,59 @@
+sort_tests:
+	#Test: file generation
+	./program generate mdane 100 512
+	./program generate dane 1000 512
+
+	#TODO: make copy of generated file, before sorting
+
+	#Test: sorting file (4B record)
+	./program sort mdane 100 4 sys
+	./program sort mdane 100 4 lib
+	./program sort dane 1000 4 sys
+	./program sort dane 1000 4 lib
+
+	#Test: sorting file (512B record)
+	./program sort mdane 100 512 sys
+	./program sort mdane 100 512 lib
+	./program sort dane 1000 512 sys
+	./program sort dane 1000 512 lib
+
+	#Test: sorting file (4096B record)
+	./program sort mdane 100 4096 sys
+	./program sort mdane 100 4096 lib
+	./program sort dane 1000 4096 sys
+	./program sort dane 1000 4096 lib
+
+	#Test: sorting file (8192B record)
+	./program sort mdane 100 8192 sys
+	./program sort mdane 100 8192 lib
+	./program sort dane 1000 8192 sys
+	./program sort dane 1000 8192 lib
+
+copy_tests:
+	#Test: file generation
+	./program generate mplik1 100 512
+	./program generate plik1 1000 512
+
+	#Test: copying file (4B record)
+	./program copy mplik1 mplik2 100 4 sys
+	./program copy mplik1 mplik2 100 4 lib
+	./program copy plik1 plik2 1000 4 sys
+	./program copy plik1 plik2 1000 4 lib
+
+	#Test: copying file (512B record)
+	./program copy mplik1 mplik2 100 512 sys
+	./program copy mplik1 mplik2 100 512 lib
+	./program copy plik1 plik2 1000 512 sys
+	./program copy plik1 plik2 1000 512 lib
+
+	#Test: copying file (4096B record)
+	./program copy mplik1 mplik2 100 4096 sys
+	./program copy mplik1 mplik2 100 4096 lib
+	./program copy plik1 plik2 1000 4096 sys
+	./program copy plik1 plik2 1000 4096 lib
+
+	#Test: copying file (8192B record)
+	./program copy mplik1 mplik2 100 8192 sys
+	./program copy mplik1 mplik2 100 8192 lib
+	./program copy plik1 plik2 1000 8192 sys
+	./program copy plik1 plik2 1000 8192 lib
