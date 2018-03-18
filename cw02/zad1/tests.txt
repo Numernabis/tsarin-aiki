@@ -1,14 +1,4 @@
 #----------------------------------
-#File: 5000 x 4B
-./program generate 5k2 5000 4 sys
-#Test: copying file
-./program copy 5k2 5k2s 5000 4 sys
-./program copy 5k2 5k2l 5000 4 lib
-#Test: sorting file
-./program sort 5k2 5000 4 sys
-./program sort 5k2s 5000 4 lib
-
-#----------------------------------
 #File: 1000 x 512B
 ./program generate 1k9 1000 512 sys
 #Test: copying file

@@ -1,0 +1,16 @@
+# Object files
+*.o
+*.obj
+
+# Libraries
+*.lib
+*.a
+
+# Executables
+*.exe
+*.out
+program
+
+# Text files
+files
+*.txt
