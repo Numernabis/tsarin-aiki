@@ -3,7 +3,7 @@
   file:   main.c
   start:  18.03.2018
   end:    []
-  lines:  213
+  lines:  211
 */
 #define _XOPEN_SOURCE 500
 #include <ftw.h>
@@ -66,8 +66,8 @@ char* get_permissions(int mode) {
 }
 
 void print_header() {
-    printf("absolute path               | size [B] | permissions | modification date\n");
-    printf("------------------------------------------------------------------------\n");
+    printf("absolute path            | size [B] | permissions | modification date\n");
+    printf("---------------------------------------------------------------------\n");
 }
 
 /* -------------------------------------------------------------------------- */
