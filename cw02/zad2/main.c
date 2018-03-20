@@ -66,8 +66,9 @@ char* get_permissions(int mode) {
 }
 
 void print_header() {
-    printf("absolute path            | size [B] | permissions | modification date\n");
-    printf("---------------------------------------------------------------------\n");
+    printf("---------------------------------------------------------------------------------------------------------------\n");
+    printf("%-60s%-12s%-15s%-30s\n", "absolute path", "size [B]", "permissions", "modification date");
+    printf("---------------------------------------------------------------------------------------------------------------\n");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -88,7 +89,7 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
     struct stat *info = malloc(sizeof(struct stat));
 
     while ((entry = readdir(dir)) != 0) {
-        strcpy(abs_path, path);
+        realpath(path, abs_path);
         strcat(abs_path, "/");
         strcat(abs_path, entry->d_name);
 
@@ -101,7 +102,7 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
         } else if (S_ISREG(info->st_mode)) {
             char* perm = get_permissions(info->st_mode);
             if (compare(date, info->st_mtime)) {
-                printf("%s\t%ld\t%s\t%s", abs_path, info->st_size, perm, ctime(&info->st_mtime));
+                printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, ctime(&info->st_mtime));
             }
             free(perm);
         } else {
@@ -122,7 +123,7 @@ int fn(const char *path, const struct stat *info, int tflag, struct FTW *ftwbuf)
     realpath(path, abs_path);
 
     if ((tflag == FTW_F) && COMPARE(DATE, info->st_mtime)) {
-        printf("%s\t%ld\t%s\t%s", abs_path, info->st_size, perm, ctime(&info->st_mtime));
+        printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, ctime(&info->st_mtime));
     }
     free(perm);
     return 0;
