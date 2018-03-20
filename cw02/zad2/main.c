@@ -66,9 +66,12 @@ char* get_permissions(int mode) {
 }
 
 void print_header() {
-    printf("---------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------\n");
     printf("%-60s%-12s%-15s%-30s\n", "absolute path", "size [B]", "permissions", "modification date");
-    printf("---------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------\n");
+}
+void print_footer() {
+    printf("----------------------------------------------------------------------------------------------------------\n");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -76,6 +79,7 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
 
     DIR* dir = opendir(path);
     char abs_path[PATH_MAX + 1];
+    char buff[20];
     if (dir == 0) {
         printf("Invalid directory: %s\n", path);
         return;
@@ -102,7 +106,8 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
         } else if (S_ISREG(info->st_mode)) {
             char* perm = get_permissions(info->st_mode);
             if (compare(date, info->st_mtime)) {
-                printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, ctime(&info->st_mtime));
+                strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&info->st_mtime));
+                printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, buff);
             }
             free(perm);
         } else {
@@ -120,10 +125,12 @@ time_t DATE;
 int fn(const char *path, const struct stat *info, int tflag, struct FTW *ftwbuf) {
     char *perm = get_permissions(info->st_mode);
     char abs_path[PATH_MAX + 1];
+    char buff[20];
     realpath(path, abs_path);
 
     if ((tflag == FTW_F) && COMPARE(DATE, info->st_mtime)) {
-        printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, ctime(&info->st_mtime));
+        strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&info->st_mtime));
+        printf("%-60s%-12ld%-15s%-30s\n", abs_path, info->st_size, perm, buff);
     }
     free(perm);
     return 0;
@@ -205,6 +212,8 @@ int main(int argc, char **argv) {
             find_files_nftw(start_path, &equal, date);
         }
     }
+
+    print_footer();
 
     /* ---------------------------------------------------------------------- */
     return 0;
