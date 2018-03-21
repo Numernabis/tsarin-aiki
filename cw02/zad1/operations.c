@@ -3,7 +3,7 @@
   file:   operations.c
   start:  16.03.2018
   end:    []
-  lines:  216
+  lines:  219
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,6 +26,12 @@ char *random_string(int size_of_record) {
     }
     return str;
 }
+void print_read_error(char *file_name) {
+    printf("Error occured while reading from %s.\n", file_name);
+}
+void print_write_error(char *file_name) {
+    printf("Error occured while writing to %s.\n", file_name);
+}
 
 /* -------------------------------------------------------------------------- */
 void generate_file_lib(char *file_name, int number_of_records, int size_of_record) {
@@ -37,7 +43,7 @@ void generate_file_lib(char *file_name, int number_of_records, int size_of_recor
         buff[size_of_record - 1] = 10; // LF - line feed
 
         if (fwrite(buff, sizeof(char), size_of_record, file) != size_of_record) {
-            printf("Error occured while writing to %s.\n", file_name);
+            print_write_error(file_name);
             return;
         }
     }
@@ -53,7 +59,7 @@ void generate_file_sys(char *file_name, int number_of_records, int size_of_recor
         buff[size_of_record - 1] = 10; // LF - line feed
 
         if (write(file, buff, size_of_record) != size_of_record) {
-            printf("Error occured while writing to %s.\n", file_name);
+            print_write_error(file_name);
             return;
         }
     }
@@ -80,39 +86,39 @@ void sort_file_lib(char *file_name, int number_of_records, int size_of_record) {
     for (i = 1; i < number_of_records; i++) {
         fseek(file, i * offset, SEEK_SET);
         if (fread(val, sizeof(char), size_of_record, file) != size_of_record) {
-            printf("Error occured while reading from %s.\n", file_name);
+            print_read_error(file_name);
             return;
         }
 
         fseek(file, (-2) * offset, SEEK_CUR);
         if (fread(tmp, sizeof(char), size_of_record, file) != size_of_record) {
-            printf("Error occured while reading from %s.\n", file_name);
+            print_read_error(file_name);
             return;
         }
 
         for (j = i - 1; j > 0 && (int) tmp[0] > (int) val[0]; j--) {
             if (fwrite(tmp, sizeof(char), size_of_record, file) != size_of_record) {
-                printf("Error occured while writing to %s.\n", file_name);
+                print_write_error(file_name);
                 return;
             }
 
             fseek(file, (-3) * offset, SEEK_CUR);
             if (fread(tmp, sizeof(char), size_of_record, file) != size_of_record) {
-                printf("Error occured while reading from %s.\n", file_name);
+                print_read_error(file_name);
                 return;
             }
         }
 
         if ((int) tmp[0] > (int) val[0] && j == 0){
             if (fwrite(tmp, sizeof(char), size_of_record, file) != size_of_record) {
-                printf("Error occured while writing to %s.\n", file_name);
+                print_write_error(file_name);
                 return;
             }
             fseek(file, (-2) * offset, SEEK_CUR);
         }
 
         if (fwrite(val, sizeof(char), size_of_record, file) != size_of_record) {
-            printf("Error occured while writing to %s.\n", file_name);
+            print_write_error(file_name);
             return;
         }
     }
@@ -130,39 +136,39 @@ void sort_file_sys(char *file_name, int number_of_records, int size_of_record) {
     for (i = 1; i < number_of_records; i++) {
         lseek(file, i * offset, SEEK_SET);
         if (read(file, val, size_of_record) != size_of_record) {
-            printf("Error occured while reading from %s.\n", file_name);
+            print_read_error(file_name);
             return;
         }
 
         lseek(file, (-2) * offset, SEEK_CUR);
         if (read(file, tmp, size_of_record) != size_of_record) {
-            printf("Error occured while reading from %s.\n", file_name);
+            print_read_error(file_name);
             return;
         }
 
         for (j = i - 1; j > 0 && (int) tmp[0] > (int) val[0]; j--) {
             if (write(file, tmp, size_of_record) != size_of_record) {
-                printf("Error occured while writing to %s.\n", file_name);
+                print_write_error(file_name);
                 return;
             }
 
             lseek(file, (-3) * offset, SEEK_CUR);
             if (read(file, tmp, size_of_record) != size_of_record) {
-                printf("Error occured while reading from %s.\n", file_name);
+                print_read_error(file_name);
                 return;
             }
         }
 
         if ((int) tmp[0] > (int) val[0] && j == 0){
             if (write(file, tmp, size_of_record) != size_of_record) {
-                printf("Error occured while writing to %s.\n", file_name);
+                print_write_error(file_name);
                 return;
             }
             lseek(file, (-2) * offset, SEEK_CUR);
         }
 
         if (write(file, val, size_of_record) != size_of_record) {
-            printf("Error occured while writing to %s.\n", file_name);
+            print_write_error(file_name);
             return;
         }
     }
@@ -179,12 +185,11 @@ void copy_file_lib(char *file_name_1, char *file_name_2, int number_of_records, 
 
     for (int i = 0; i < number_of_records; i++) {
         if (fread(buff, sizeof(char), buffer_size, src) != buffer_size) {
-            printf("Error occured while reading from %s.\n", file_name_1);
+            print_read_error(file_name_1);
             return;
         }
-
         if (fwrite(buff, sizeof(char), buffer_size, dest) != buffer_size) {
-            printf("Error occured while writing to %s.\n", file_name_2);
+            print_write_error(file_name_2);
             return;
         }
     }
@@ -199,12 +204,11 @@ void copy_file_sys(char *file_name_1, char *file_name_2, int number_of_records, 
 
     for (int i = 0; i < number_of_records; i++) {
         if (read(src, buff, buffer_size) != buffer_size) {
-            printf("Error occured while reading from %s.\n", file_name_1);
+            print_read_error(file_name_1);
             return;
         }
-
         if (write(dest, buff, buffer_size) != buffer_size) {
-            printf("Error occured while writing to %s.\n", file_name_2);
+            print_write_error(file_name_2);
             return;
         }
     }

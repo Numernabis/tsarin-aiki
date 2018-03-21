@@ -99,7 +99,9 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
 
         if (strcmp(entry->d_name, "..")  == 0 || strcmp(entry->d_name, ".") == 0) continue;
 
-        stat(abs_path, info);
+        lstat(abs_path, info);
+
+        if (S_ISLNK(info->st_mode)) continue;
 
         if (S_ISDIR(info->st_mode)) {
             find_files_sys(abs_path, compare, date);

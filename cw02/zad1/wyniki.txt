@@ -165,3 +165,9 @@ file sorting [sys]:
 ./program sort files/6k13s 6000 8192 lib
 file sorting [lib]:
 43540000µs 2768000µs
+
+#----------------------------------
+komentarz:
+kopiowanie - funkcje systemowe zawsze sa szybsze,
+sortowanie - zazwyczaj funkcje systemowe sa wydajniejsze
+  wyjatek: test 2000 x 4096B
