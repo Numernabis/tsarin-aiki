@@ -13,10 +13,10 @@ build: $(PROG).c
 tests:
 	#----------------------------------
 	#Test [sys]
-	./program ../zad1 '<' 2018-03-18 20:00:00 sys
+	./program ../zad1 '<' 2018-03-23 20:00:00 sys
 	#----------------------------------
 	#Test [nftw]
-	./program ../zad1 '<' 2018-03-18 20:00:00 nftw
+	./program ../zad1 '<' 2018-03-23 20:00:00 nftw
 
 clean:
 	rm -f *.o *.a

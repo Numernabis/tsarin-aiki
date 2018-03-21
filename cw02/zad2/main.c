@@ -47,6 +47,8 @@ char* get_permissions(int mode) {
     char* perm = malloc(11);
     perm = strcpy(perm, "----------\0");
 
+    if (S_ISLNK(mode)) perm[0] = 'l';
+
     // user
     if (mode & S_IRUSR) perm[1] = 'r';
     if (mode & S_IWUSR) perm[2] = 'w';
@@ -101,11 +103,11 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
 
         lstat(abs_path, info);
 
-        if (S_ISLNK(info->st_mode)) continue;
+        //if (S_ISLNK(info->st_mode)) continue;
 
         if (S_ISDIR(info->st_mode)) {
             find_files_sys(abs_path, compare, date);
-        } else if (S_ISREG(info->st_mode)) {
+        } else if (S_ISREG(info->st_mode) || S_ISLNK(info->st_mode)) {
             char* perm = get_permissions(info->st_mode);
             if (compare(date, info->st_mtime)) {
                 strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&info->st_mtime));
