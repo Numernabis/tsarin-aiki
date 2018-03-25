@@ -3,7 +3,7 @@
   file:   main.c
   start:  25.03.2018
   end:    []
-  lines:  []
+  lines:  90
 */
 #include <stdlib.h>
 #include <stdio.h>

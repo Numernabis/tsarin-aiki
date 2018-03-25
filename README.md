@@ -6,7 +6,7 @@ In case of losing motivation:
 
 Task list
 - [x] Set 1
-- [ ] Set 2
+- [x] Set 2
 - [ ] Set 3
 - [ ] Set 4
 - [ ] Set 5

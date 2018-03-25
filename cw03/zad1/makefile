@@ -12,7 +12,7 @@ build: $(PROG).c
 
 tests:
 	#----------------------------------
-	#Test [sys]
+	#Test [sys with forks]
 	./program ../../cw02 '<' 2018-03-23 20:00:00
 
 clean:
