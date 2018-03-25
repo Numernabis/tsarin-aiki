@@ -1,9 +1,9 @@
 /*
   author: Ludi
   file:   main.c
-  start:  18.03.2018
-  end:    []
-  lines:  211
+  start:  22.03.2018
+  end:    25.03.2018
+  lines:  186
 */
 #define _XOPEN_SOURCE 500
 #include <dirent.h>
@@ -103,14 +103,14 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
 
         lstat(abs_path, info);
 
-        //if (S_ISLNK(info->st_mode)) continue;
-
         if (S_ISDIR(info->st_mode)) {
+            /* ============================================================== */
             pid_t child_pid = fork();
             if (child_pid == 0) {
                 find_files_sys(abs_path, compare, date);
                 return;
             }
+            /* ============================================================== */
         } else if (S_ISREG(info->st_mode) || S_ISLNK(info->st_mode)) {
             char* perm = get_permissions(info->st_mode);
             if (compare(date, info->st_mtime)) {
