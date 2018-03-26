@@ -1,18 +1,29 @@
 #Define variables
 CC= gcc
-CFLAGS= -Wall -std=c99 -I.
+CFLAGS= -Wall -lm
 PROG= main
+TIME_LIM= 5
+MEMO_LIM= 16
 
 #Default rule
-all: build tests clean
+all: program over_time over_memo test clean
 
-build: $(PROG).c
+program: $(PROG).c
 	#Compile main
-	$(CC) -o program $(PROG).c $(CFLAGS)
+	$(CC) -o $@ $< $(CFLAGS)
 
-tests:
+over_time: over_time.c
+	#Compile over_time
+	$(CC) -o $@ $< $(CFLAGS)
+
+over_memo: over_memo.c
+	#Compile over_memo
+	$(CC) -o $@ $< $(CFLAGS)
+
+test:
 	#---------------------------------------
-	./program test_batch 10 30
+	./program test_batch $(TIME_LIM) $(MEMO_LIM)
 
 clean:
 	rm -f *.o
+	rm over_time over_memo

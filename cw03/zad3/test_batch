@@ -1,13 +1,12 @@
-ls
-ls -l
-
-
-ls -ali
-
 
 echo "BUAHAHAA"
 
 
-ls -la -r
+                ls -la -r
 
-                echo "ARGH"
+
+./over_time 33333
+
+                ./over_time 3333
+
+./over_memo 100 2
