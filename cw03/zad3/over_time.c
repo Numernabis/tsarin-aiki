@@ -10,6 +10,6 @@ int main(int argc, char *argv[]) {
         x = cos(y);
         y = sin(x) * x;
     }
-    printf("Result: x = %lf  y = %lf\n", x, y);
+    printf("Success!\tResult: x = %lf  y = %lf\n", x, y);
     return 0;
 }

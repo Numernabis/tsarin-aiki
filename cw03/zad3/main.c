@@ -39,16 +39,10 @@ void print_usage_info(struct rusage *before, struct rusage *after) {
         after->ru_stime.tv_sec - before->ru_stime.tv_sec +
         (after->ru_stime.tv_usec - before->ru_stime.tv_usec) * 0.000001;
     long res_size = (after->ru_maxrss - before->ru_maxrss);
-    long swaps = (after->ru_nswap - before->ru_nswap);
-    long block_in = (after->ru_inblock - before->ru_inblock);
-    long block_out = (after->ru_oublock - before->ru_oublock);
     printf("Elapsed user time: %f s\n"
            "Elapsed system time: %f s\n"
-           "Resident set size: %ld kB\n"
-           "Number of swaps: %ld\n"
-           "Block input operations: %ld\n"
-           "Block output operations: %ld\n",
-           user_time, system_time, res_size, swaps, block_in, block_out);
+           "Resident set size: %ld kB\n",
+           user_time, system_time, res_size);
 }
 void set_limits(int time_limit, int memory_limit) {
     struct rlimit r;
