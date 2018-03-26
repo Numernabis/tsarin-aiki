@@ -1,0 +1,13 @@
+ls
+ls -l
+
+
+ls -ali
+
+
+echo "BUAHAHAA"
+
+
+ls -la -r
+
+                echo "ARGH"
