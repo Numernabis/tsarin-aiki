@@ -11,7 +11,7 @@ build: $(PROG).c
 	$(CC) -o program $(PROG).c $(CFLAGS)
 
 tests:
-	#----------------------------------
+	#---------------------------------------
 	./program test_batch
 
 clean:

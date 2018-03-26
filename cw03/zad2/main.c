@@ -3,7 +3,7 @@
   file:   main.c
   start:  25.03.2018
   end:    []
-  lines:  90
+  lines:  87
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,17 +14,16 @@
 
 #define ARGS_MAX 16
 #define LINE_MAX 16*16
-
 /* -------------------------------------------------------------------------- */
 void print_header(int pid, char** args) {
-    printf("\n-------------------------------------------------------------\n");
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("%-6s%-12d%-6s", "PID: ", pid, "Task: ");
     int i = 0;
     while(args[i] != 0) { printf("%s ", args[i]); i++; }
     printf("\n-------------------------------------------------------------\n");
 }
 void print_footer() {
-    printf("---------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------\n");
 }
 #define CLOSE_EXIT(num) {                                                      \
     fclose(file);                                                              \
@@ -42,8 +41,7 @@ int main(int argc, char **argv) {
         printf("./program  batch_file_name\n");
         return 2;
     }
-
-    // variables
+    /* variables */
     FILE* file;
     char* batch_file_name = argv[1];
     char command[LINE_MAX];
@@ -53,7 +51,6 @@ int main(int argc, char **argv) {
         printf("Unable to open batch file. :(\n");
         return 2;
     }
-
     /* ---------------------------------------------------------------------- */
     while (fgets(command, LINE_MAX, file)) {
         if (command[0] == '\n') continue;
@@ -66,7 +63,7 @@ int main(int argc, char **argv) {
             i += 1;
         }
         args[i] = 0;
-
+        /* execute task in new process */
         pid_t pid = fork();
         if (pid < 0) {
             printf("Error: fork() failed.");
@@ -75,7 +72,6 @@ int main(int argc, char **argv) {
         if (pid == 0) {
             print_header((int)getpid(), args);
             execvp(args[0], args);
-            print_footer();
         } else {
             int status;
             waitpid(pid, &status, 0);
@@ -84,6 +80,7 @@ int main(int argc, char **argv) {
                 CLOSE_EXIT(2);
             }
         }
+        print_footer();
     }
     /* ---------------------------------------------------------------------- */
     CLOSE_EXIT(0);
