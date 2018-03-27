@@ -3,7 +3,7 @@
   file:   main.c
   start:  26.03.2018
   end:    []
-  lines:  125
+  lines:  119
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     char* args[ARGS_MAX];
 
     if ((file = fopen(batch_file_name, "r")) == 0) {
-        printf("Unable to open batch file. :(\n");
+        printf("Unable to open batch file: %s\n", batch_file_name);
         return 2;
     }
     /* ---------------------------------------------------------------------- */
@@ -90,8 +90,8 @@ int main(int argc, char **argv) {
         }
         args[i] = 0;
         /* execute task in new process */
-        struct rusage start_pid, end_pid;
-        getrusage(RUSAGE_CHILDREN, &start_pid);
+        struct rusage start_pid_usage, end_pid_usage;
+        getrusage(RUSAGE_CHILDREN, &start_pid_usage);
         pid_t pid = fork();
         if (pid < 0) {
             printf("Error: fork() failed.");
@@ -110,8 +110,8 @@ int main(int argc, char **argv) {
             }
         }
         print_footer();
-        getrusage(RUSAGE_CHILDREN, &end_pid);
-        print_usage_info(&start_pid, &end_pid);
+        getrusage(RUSAGE_CHILDREN, &end_pid_usage);
+        print_usage_info(&start_pid_usage, &end_pid_usage);
         print_footer();
     }
     /* ---------------------------------------------------------------------- */
