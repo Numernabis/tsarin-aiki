@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  22.03.2018
-  end:    25.03.2018
-  lines:  186
+  end:    28.03.2018
+  lines:  168
 */
 #define _XOPEN_SOURCE 500
 #include <dirent.h>
@@ -27,13 +27,11 @@ int before(time_t a, time_t b) {
 int after(time_t a, time_t b) {
     return difftime(b, a) > 0.00001 ? 1 : 0;
 }
-
 /* -------------------------------------------------------------------------- */
 time_t parse_date(char* part1, char* part2) {
     char* date_str = malloc(20);
     struct tm date;
-
-    // Parse date from argv[3] (YYYY-mm-dd) and argv[4] (HH:MM:SS)
+    // parse date from argv[3] (YYYY-mm-dd) and argv[4] (HH:MM:SS)
     strcpy(date_str, part1);
     strcat(date_str, " ");
     strcat(date_str, part2);
@@ -42,23 +40,19 @@ time_t parse_date(char* part1, char* part2) {
     free(date_str);
     return mktime(&date);
 }
-
 char* get_permissions(int mode) {
     char* perm = malloc(11);
     perm = strcpy(perm, "----------\0");
 
     if (S_ISLNK(mode)) perm[0] = 'l';
-
     // user
     if (mode & S_IRUSR) perm[1] = 'r';
     if (mode & S_IWUSR) perm[2] = 'w';
     if (mode & S_IXUSR) perm[3] = 'x';
-
     // group
     if (mode & S_IRGRP) perm[4] = 'r';
     if (mode & S_IWGRP) perm[5] = 'w';
     if (mode & S_IXGRP) perm[6] = 'x';
-
     // others
     if (mode & S_IROTH) perm[7] = 'r';
     if (mode & S_IWOTH) perm[8] = 'w';
@@ -66,19 +60,16 @@ char* get_permissions(int mode) {
 
     return perm;
 }
-
 void print_header() {
-    printf("--------------------------------------------------------------------------------------------------------------------\n");
-    printf("%-60s%-12s%-15s%-25s%-7s\n", "absolute path", "size [B]", "permissions", "modification date", "PID");
-    printf("--------------------------------------------------------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------------------------------------------------------\n");
+    printf("%-60s%-12s%-15s%-23s%-6s\n", "absolute path", "size [B]", "permissions", "modification date", "PID");
+    printf("-------------------------------------------------------------------------------------------------------------------\n");
 }
 void print_footer() {
-    printf("--------------------------------------------------------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------------------------------------------------------\n");
 }
-
 /* -------------------------------------------------------------------------- */
 void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
-
     DIR* dir = opendir(path);
     char abs_path[PATH_MAX + 1];
     char buff[20];
@@ -90,7 +81,6 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
         printf("Path too long: %s\n", path);
         return;
     }
-
     struct dirent *entry;
     struct stat *info = malloc(sizeof(struct stat));
 
@@ -98,8 +88,8 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
         realpath(path, abs_path);
         strcat(abs_path, "/");
         strcat(abs_path, entry->d_name);
-
-        if (strcmp(entry->d_name, "..")  == 0 || strcmp(entry->d_name, ".") == 0) continue;
+        if (strcmp(entry->d_name, "..")  == 0
+            || strcmp(entry->d_name, ".") == 0) continue;
 
         lstat(abs_path, info);
 
@@ -115,7 +105,7 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
             char* perm = get_permissions(info->st_mode);
             if (compare(date, info->st_mtime)) {
                 strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&info->st_mtime));
-                printf("%-60s%-12ld%-15s%-25s%-7d\n", abs_path, info->st_size, perm, buff, (int)getpid());
+                printf("%-60s%-12ld%-15s%-23s%-6d\n", abs_path, info->st_size, perm, buff, (int)getpid());
             }
             free(perm);
         } else {
@@ -125,9 +115,8 @@ void find_files_sys(char* path, int (*compare)(time_t, time_t), time_t date) {
     free(info);
     closedir(dir);
 }
-
 /* -------------------------------------------------------------------------- */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     /*
     proper arguments:
         argv[0] - ./program
@@ -142,13 +131,11 @@ int main(int argc, char **argv) {
         printf("./program  path  </>/=  date_(YYYY-mm-dd)  date_(HH:MM:SS)\n");
         return 2;
     }
-
     // variables
-    char *start_path;
+    char* start_path;
     DIR* start_dir;
     time_t date;
-    char *sign = "";
-
+    char* sign = "";
     // load arguments
     start_path = argv[1];
     sign = argv[2];
@@ -161,7 +148,6 @@ int main(int argc, char **argv) {
     // so far, arguments are validated :)
 
     /* ---------------------------------------------------------------------- */
-
     if ((start_dir = opendir(start_path)) == 0) {
         printf("Unable to open given directory.\n");
         return 2;
@@ -169,7 +155,6 @@ int main(int argc, char **argv) {
     closedir(start_dir);
 
     print_header();
-
     if (strcmp(sign, "<") == 0) {
         find_files_sys(start_path, &before, date);
     } else if (strcmp(sign, ">") == 0) {
@@ -177,9 +162,7 @@ int main(int argc, char **argv) {
     } else {
         find_files_sys(start_path, &equal, date);
     }
-
     print_footer();
-
     /* ---------------------------------------------------------------------- */
     return 0;
 }

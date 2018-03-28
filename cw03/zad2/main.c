@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  25.03.2018
-  end:    []
-  lines:  87
+  end:    28.03.2018
+  lines:  88
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,7 +16,7 @@
 #define LINE_MAX 16*16
 /* -------------------------------------------------------------------------- */
 void print_header(int pid, char** args) {
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("%-6s%-12d%-6s", "PID: ", pid, "Task: ");
     int i = 0;
     while(args[i] != 0) { printf("%s ", args[i]); i++; }
@@ -30,7 +30,7 @@ void print_footer() {
     exit(num);                                                                 \
 }
 /* -------------------------------------------------------------------------- */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     /*
     proper arguments:
         argv[0] - ./program
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     char* args[ARGS_MAX];
 
     if ((file = fopen(batch_file_name, "r")) == 0) {
-        printf("Unable to open batch file. :(\n");
+        printf("Unable to open batch file: %s\n", batch_file_name);
         return 2;
     }
     /* ---------------------------------------------------------------------- */
@@ -68,10 +68,11 @@ int main(int argc, char **argv) {
         if (pid < 0) {
             printf("Error: fork() failed.");
             CLOSE_EXIT(2);
-        }
-        if (pid == 0) {
+        } else if (pid == 0) {
             print_header((int)getpid(), args);
             execvp(args[0], args);
+            printf("Unable to execute task!\n");
+            break;
         } else {
             int status;
             waitpid(pid, &status, 0);

@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  26.03.2018
-  end:    []
-  lines:  117
+  end:    28.03.2018
+  lines:  118
 */
 #include <stdlib.h>
 #include <stdio.h>

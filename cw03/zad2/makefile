@@ -4,13 +4,13 @@ CFLAGS= -Wall -std=c99 -I.
 PROG= main
 
 #Default rule
-all: build tests clean
+all: program test clean
 
-build: $(PROG).c
+program: $(PROG).c
 	#Compile main
-	$(CC) -o program $(PROG).c $(CFLAGS)
+	$(CC) -o $@ $< $(CFLAGS)
 
-tests:
+test:
 	#---------------------------------------
 	./program test_batch
 

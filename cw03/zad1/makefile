@@ -4,16 +4,16 @@ CFLAGS= -Wall -std=c99 -I.
 PROG= main
 
 #Default rule
-all: build tests clean
+all: program test clean
 
-build: $(PROG).c
+program: $(PROG).c
 	#Compile main
-	$(CC) -o program $(PROG).c $(CFLAGS)
+	$(CC) -o $@ $< $(CFLAGS)
 
-tests:
+test:
 	#----------------------------------
 	#Test [sys with forks]
 	./program ../../cw02 '<' 2018-03-23 20:00:00
 
 clean:
-	rm -f *.o *.a
+	rm -f *.o

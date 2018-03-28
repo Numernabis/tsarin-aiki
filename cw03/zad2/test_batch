@@ -1,11 +1,14 @@
-ls
+
 ls -l
 
 
-ls -ali
+                ls -ali
 
 
 echo "BUAHAHAA"
+
+
+./something 42
 
 
 ls -la -r
