@@ -3,7 +3,7 @@ CC= gcc
 CFLAGS= -Wall -lm
 PROG= main
 TIME_LIM= 5
-MEMO_LIM= 16
+MEMO_LIM= 32
 
 #Default rule
 all: program over_time over_memo test clean

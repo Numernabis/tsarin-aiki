@@ -3,7 +3,7 @@
   file:   main.c
   start:  26.03.2018
   end:    []
-  lines:  119
+  lines:  117
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,7 +18,7 @@
 #define LINE_MAX 16*16
 /* -------------------------------------------------------------------------- */
 void print_header(int pid, char** args) {
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("%-6s%-12d%-6s", "PID: ", pid, "Task: ");
     int i = 0;
     while(args[i] != 0) { printf("%s ", args[i]); i++; }
@@ -39,9 +39,7 @@ void print_usage_info(struct rusage *before, struct rusage *after) {
         after->ru_stime.tv_sec - before->ru_stime.tv_sec +
         (after->ru_stime.tv_usec - before->ru_stime.tv_usec) * 0.000001;
     long res_size = (after->ru_maxrss - before->ru_maxrss);
-    printf("Elapsed user time: %f s\n"
-           "Elapsed system time: %f s\n"
-           "Resident set size: %ld kB\n",
+    printf("Usage info >>  UT: %.4fs   ST: %.4fs   RSS: %ldkB\n",
            user_time, system_time, res_size);
 }
 void set_limits(int time_limit, int memory_limit) {
@@ -52,7 +50,7 @@ void set_limits(int time_limit, int memory_limit) {
     setrlimit(RLIMIT_AS, &r);
 }
 /* -------------------------------------------------------------------------- */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     /*
     proper arguments:
         argv[0] - ./program
@@ -62,7 +60,7 @@ int main(int argc, char **argv) {
     */
     if (argc != 4) {
         printf("Invalid program call. Proper arguments as follows:\n");
-        printf("./program  batch_file_name time_limit memory_limit\n");
+        printf("./program  batch_file_name  time_limit[in seconds]  memory_limit[in MB]\n");
         return 2;
     }
     /* variables */
@@ -90,17 +88,18 @@ int main(int argc, char **argv) {
         }
         args[i] = 0;
         /* execute task in new process */
-        struct rusage start_pid_usage, end_pid_usage;
-        getrusage(RUSAGE_CHILDREN, &start_pid_usage);
+        struct rusage ru_before, ru_after;
+        getrusage(RUSAGE_CHILDREN, &ru_before);
         pid_t pid = fork();
         if (pid < 0) {
             printf("Error: fork() failed.");
             CLOSE_EXIT(2);
-        }
-        if (pid == 0) {
+        } else if (pid == 0) {
             print_header((int)getpid(), args);
             set_limits(time_limit, memory_limit);
             execvp(args[0], args);
+            printf("Unable to execute task!\n");
+            break;
         } else {
             int status;
             waitpid(pid, &status, 0);
@@ -110,8 +109,8 @@ int main(int argc, char **argv) {
             }
         }
         print_footer();
-        getrusage(RUSAGE_CHILDREN, &end_pid_usage);
-        print_usage_info(&start_pid_usage, &end_pid_usage);
+        getrusage(RUSAGE_CHILDREN, &ru_after);
+        print_usage_info(&ru_before, &ru_after);
         print_footer();
     }
     /* ---------------------------------------------------------------------- */

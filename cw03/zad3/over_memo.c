@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char** argv) {
     int blocks = atoi(argv[1]);
     int size = atoi(argv[2]);
     int size_mb = size * 1024 * 1024;

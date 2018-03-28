@@ -9,6 +9,8 @@ echo "BUAHAHAA"
 
                 ./over_time 3333
 
+./whatever 124
+
 ./over_memo 100 2
 
-                ./over_memo 2 4
+                ./over_memo 5 4
