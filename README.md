@@ -9,6 +9,6 @@ In case of losing motivation:
 | 1  | libraries    | <ul><li>[x] all</li></ul> |
 | 2  | files        | <ul><li>[x] all</li></ul> |
 | 3  | processes    | <ul><li>[x] all</li></ul> |
-| 4  | signals      | <ul><li>[ ] zad1a</li><li>[ ] zad1b</li><li>[ ] zad2</li><li>[ ] zad3</li></ul> |
+| 4  | signals      | <ul><li>[x] zad1a</li><li>[x] zad1b</li><li>[ ] zad2</li><li>[ ] zad3</li></ul> |
 | 5  |              | <ul><li>[ ] </li></ul> |
 | 6  |              | <ul><li>[ ] </li></ul> |
