@@ -7,6 +7,15 @@ In case of losing motivation:
 Task list
 - [x] Set 1
 - [x] Set 2
-- [ ] Set 3
+- [x] Set 3
 - [ ] Set 4
 - [ ] Set 5
+
+
+| Set| Topic        | Done |
+|---:|:-------------| ----:|
+| 1  | libraries    | [x]  |
+| 2  | files        | [x]  |
+| 3  | processes    | [x]  |
+| 4  | signals      | []   |
+| 5  |              | []   |
