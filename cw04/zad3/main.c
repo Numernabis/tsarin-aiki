@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  11.04.2018
-  end:    []
-  lines:  []
+  end:    11.04.2018
+  lines:  117
 */
 #define _XOPEN_SOURCE 500
 #include <stdio.h>
@@ -17,9 +17,9 @@
 
 int L = 0;
 int TYPE = 0;
-int CHILD_CNT = 0;
-int PARENT_CNT = 0;
-int SEND = 0;
+int CLD_CNT = 0;
+int PAR_CNT = 0;
+int SIG_CNT = 0;
 
 void set_handlers_parent();
 void set_handlers_child();
@@ -33,6 +33,10 @@ void handler_sig2_child(int, siginfo_t*, void*);
     memset(&act, 0, sizeof(act));                                              \
     sigset_t real_mask;                                                        \
     sigfillset(&real_mask);                                                    \
+
+#define SIG_CHOOSE                                                             \
+    int sig = SIGUSR1;                                                         \
+    if (TYPE == 3) sig = SIGRTMIN;                                             \
 
 #define SIG_HANDLER(signal, func) {                                            \
     act.sa_sigaction = &(func);                                                \
@@ -58,7 +62,7 @@ int main(int argc, char** argv) {
     pid_t pid = fork();
     if (pid != 0) {
         set_handlers_parent();
-        sleep(2);
+        sleep(3);
         for(int i = 0; i < L; i++) {
             send_signal(pid);
         }
@@ -68,8 +72,8 @@ int main(int argc, char** argv) {
         set_handlers_child();
         while(1) { pause(); }
     }
-    printf("Send %d signals from parent\n", SEND);
-    printf("Received %d signals at parent\n", PARENT_CNT);
+    printf("Parent: send %d signals\n", SIG_CNT);
+    printf("Parent: received %d signals\n", PAR_CNT);
     /* ============================== */
     return 0;
 }
@@ -88,31 +92,26 @@ void set_handlers_child() {
     SIG_HANDLER(SIGUSR1, handler_sig1_child);
     SIG_HANDLER(SIGUSR2, handler_sig2_child);
 }
-
 void send_signal(pid_t pid) {
-    int sig = SIGUSR1;
-    if (TYPE == 3) sig = SIGRTMIN;
-
+    SIG_CHOOSE
     if (kill(pid, sig) == -1) {
         printf("Error: sending signal failed.\n");
         exit(1);
     } else {
-        SEND++;
+        SIG_CNT++;
     }
     if (TYPE == 2) sleep(1);
 }
 
 void handler_sig1_parent(int num, siginfo_t *info, void *context) {
-    PARENT_CNT++;
+    PAR_CNT++;
 }
 void handler_sig1_child(int num, siginfo_t *info, void *context) {
-    int sig = SIGUSR1;
-    if (TYPE == 3) sig = SIGRTMIN;
-    CHILD_CNT++;
+    SIG_CHOOSE
+    CLD_CNT++;
     kill(getppid(), sig);
 }
 void handler_sig2_child(int num, siginfo_t *info, void *context) {
-    printf("Process ended\n");
-    printf("Received %d signals at child\n", CHILD_CNT);
+    printf("Child: received %d signals\n", CLD_CNT);
     exit(0);
 }

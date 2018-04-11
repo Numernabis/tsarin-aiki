@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
     }
     /* ============================== */
     for (int i = 0; i < N; i++) {
-        srand(time(NULL));
         pid_t pid = fork();
+        srand(time(NULL));
         if (pid == 0) {
             printf("<%d> created new child <%d>\n", getppid(), getpid());
             SIG_HANDLER(SIGUSR2, handler_sigusr2)
