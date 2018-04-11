@@ -2,7 +2,7 @@
   author: Ludi
   file:   main.c
   start:  11.04.2018
-  end:    []
+  end:    11.04.2018
   lines:  107
 */
 #define _XOPEN_SOURCE 500
