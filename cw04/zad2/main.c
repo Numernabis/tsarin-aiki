@@ -38,11 +38,12 @@ void handler_sigusr2();
 
 int main(int argc, char** argv) {
     if (argc != 3) {
-        printf("Wrong number of arguments. Proper call:\n");
-        printf("./program  N  K\t where N - number of child, K - numer of requests");
+        printf("Wrong number of arguments. Proper call:\n"
+               "./program  N  K\n"
+               "where: N - number of child, K - numer of requests\n");
         return 2;
     }
-    if ((N = atoi(argv[1])) == 0 || (K = atoi(argv[2])) == 0) {
+    if ((N = atoi(argv[1])) == 0 || (K = atoi(argv[2])) == 0 || N < 0 || K < 0) {
         printf("Parameters N, K must be positive integers.\n");
         return 2;
     }
@@ -82,12 +83,12 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void handler_sigusr1(int num, siginfo_t *child, void *context){
+void handler_sigusr1(int num, siginfo_t *child, void *context) {
     printf("<%d> received request from <%d>\n", getpid(), child->si_pid);
-    if (sig_cnt < K){
+    if (sig_cnt < K - 1) {
         req[sig_cnt] = child->si_pid;
-    } else if (sig_cnt == K) {
-        for (int i = 0; i < K ; i++){
+    } else if (sig_cnt == K - 1) {
+        for (int i = 0; i < K - 1; i++){
             kill(req[i], SIGUSR2);
         }
         kill(child->si_pid, SIGUSR2);
