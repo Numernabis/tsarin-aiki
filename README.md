@@ -10,5 +10,5 @@ In case of losing motivation:
 | 2  | files        | :heavy_check_mark: |
 | 3  | processes    | :heavy_check_mark: |
 | 4  | signals      | :heavy_check_mark: |
-| 5  | streams      | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |
+| 5  | streams      | <ul><li>[x] zad1</li><li>[ ] zad2</li></ul> |
 | 6  |              |  |

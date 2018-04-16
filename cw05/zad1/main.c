@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  12.04.2018
-  end:    97
-  lines:  []
+  end:    16.04.2018
+  lines:  92
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,7 +33,7 @@ char** parse_args(char* line, char* delim) {
 }
 void print_header(char** args) {
     printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    printf("%-6s", "Task: "); int i = 0;
+    printf("%-8s", "Task: "); int i = 0;
     while(args[i] != 0) { printf("%s|", args[i]); i++; }
     printf("\n-------------------------------------------------------------\n");
 }
@@ -42,11 +42,6 @@ void print_footer() {
 }
 /* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
-    /*
-    proper arguments:
-        argv[0] - ./program
-        argv[1] - batch_file_name
-    */
     if (argc != 2) {
         printf("Invalid program call. Proper arguments as follows:\n");
         printf("./program  batch_file_name\n");
