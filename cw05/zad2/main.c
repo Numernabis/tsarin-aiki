@@ -3,8 +3,9 @@
   file:   main.c
   start:  16.04.2018
   end:    []
-  lines:  []
+  lines:  54
 */
+#define _XOPEN_SOURCE 500
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -14,8 +15,8 @@
 #include <string.h>
 
 int START = 0;
-void handle_usr1(int num, siginfo_t* siginfo, void* context) {
-    printf("Received USR1\n");
+void handle_usr2(int num, siginfo_t* siginfo, void* context) {
+    printf("Received USR2\n");
     START = 1;
 }
 /* -------------------------------------------------------------------------- */
@@ -29,30 +30,24 @@ int main(int argc, char** argv) {
     memset(&act, 0, sizeof(act));
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_SIGINFO | SA_RESTART;
-    act.sa_sigaction = &handle_usr1;
-    sigaction(SIGUSR1, &act, NULL);
+    act.sa_sigaction = &handle_usr2;
+    sigaction(SIGUSR2, &act, NULL);
     /* ---------------------------------------------------------------------- */
     pid_t pid = fork();
-    if (pid < 0) //handle fork error
     if (pid == 0) {
         execlp("./master", "./master", argv[1], NULL);
         return 0;
     }
     while (!START) {
         printf("%i: waiting for signal from master...\n", getpid());
-        sleep(0.5);
+        sleep(1);
     }
-
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < 10; i++) {
         pid_t slave = fork();
-        if (slave < 0) //handle for error
         if (slave != 0) {
             execlp("./slave", "./slave", argv[1], argv[2], NULL);
-            FAILURE_EXIT("Error creating slave\n")
         }
     }
-
-    //while (wait(0)) if (errno != ECHILD) break;
     while (wait(NULL) > 0) { }
     /* ---------------------------------------------------------------------- */
     return 0;

@@ -10,6 +10,9 @@
 *.exe
 *.out
 program
+main
+master
+slave
 
 # Text files
 files

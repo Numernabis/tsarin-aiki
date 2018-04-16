@@ -1,14 +1,18 @@
 #Define variables
 CC= gcc
 CFLAGS= -Wall -std=c99 -I.
-PROG= main
 
 #Default rule
-all: program clean
+all: main master slave clean
 
-program: $(PROG).c
-	#Compile main
-	$(CC) -o $@ $< $(CFLAGS)
+main: main.c
+	$(CC) $< -o $@ $(CFLAGS)
+
+master: master.c
+	$(CC) $< -o $@ $(CFLAGS)
+
+slave: slave.c
+	$(CC) $< -o $@ $(CFLAGS)
 
 clean:
 	rm -f *.o
