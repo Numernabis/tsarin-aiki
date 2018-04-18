@@ -3,4 +3,4 @@ ls -ali | tail -3 | head -2
 
 ls -al /bin | tail -8 | sort | tail -4
 
-ls -l / | head -20 | sort | head -8
+ls -l /etc | head -15 | sort | head -8

@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  12.04.2018
-  end:    16.04.2018
-  lines:  92
+  end:    18.04.2018
+  lines:  95
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,7 +34,10 @@ char** parse_args(char* line, char* delim) {
 void print_header(char** args) {
     printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("%-8s", "Task: "); int i = 0;
-    while(args[i] != 0) { printf("%s|", args[i]); i++; }
+    while(args[i] != 0) {
+        printf("%s", args[i]); i++;
+        if(args[i] != 0) printf("|");
+    }
     printf("\n-------------------------------------------------------------\n");
 }
 void print_footer() {
