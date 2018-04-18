@@ -2,7 +2,7 @@
   author: Ludi
   file:   main.c
   start:  16.04.2018
-  end:    []
+  end:    18.04.2018
   lines:  54
 */
 #define _XOPEN_SOURCE 500
@@ -16,14 +16,14 @@
 
 int START = 0;
 void handle_usr2(int num, siginfo_t* siginfo, void* context) {
-    printf("Received USR2\n");
+    printf("Received USR2. Starting slaves.\n");
     START = 1;
 }
 /* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
-    if (argc != 3) {
+    if (argc != 4) {
         printf("Invalid program call. Proper arguments as follows:\n"
-               "./program  path_to_named_pipe  N\n");
+               "./program  path_to_named_pipe  num_of_slaves  N\n");
         return 2;
     }
     struct sigaction act;
@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
     act.sa_sigaction = &handle_usr2;
     sigaction(SIGUSR2, &act, NULL);
     /* ---------------------------------------------------------------------- */
+    int snum = atoi(argv[2]);
     pid_t pid = fork();
     if (pid == 0) {
         execlp("./master", "./master", argv[1], NULL);
@@ -42,10 +43,10 @@ int main(int argc, char** argv) {
         printf("%i: waiting for signal from master...\n", getpid());
         sleep(1);
     }
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < snum; i++) {
         pid_t slave = fork();
         if (slave != 0) {
-            execlp("./slave", "./slave", argv[1], argv[2], NULL);
+            execlp("./slave", "./slave", argv[1], argv[3], NULL);
         }
     }
     while (wait(NULL) > 0) { }

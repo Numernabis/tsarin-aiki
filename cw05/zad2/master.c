@@ -2,8 +2,8 @@
   author: Ludi
   file:   master.c
   start:  16.04.2018
-  end:    []
-  lines:  39
+  end:    18.04.2018
+  lines:  42
 */
 #define _XOPEN_SOURCE 500
 #include <stdlib.h>
@@ -24,10 +24,13 @@ int main(int argc, char** argv) {
     }
     char* fpath = argv[1];
     char buff[BUFF_SIZE];
+    if (mkfifo(fpath, S_IRUSR | S_IWUSR) == -1) {
+        printf("master: error creating FIFO\n");
+        return 2;
+    }
     printf("master: sending signal to main (%i)\n", getppid());
     kill(getppid(), SIGUSR2);
     /* --------------------------------------------- */
-    mkfifo(fpath, S_IRUSR | S_IWUSR);
     FILE *fifo = fopen(fpath, "r");
     while (fgets(buff, BUFF_SIZE, fifo) != 0) {
         write(1, buff, strlen(buff));

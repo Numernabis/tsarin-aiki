@@ -2,7 +2,7 @@
   author: Ludi
   file:   slave.c
   start:  16.04.2018
-  end:    []
+  end:    18.04.2018
   lines:  47
 */
 #define _XOPEN_SOURCE 500
