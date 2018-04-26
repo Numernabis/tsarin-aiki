@@ -1,12 +1,13 @@
 # Systemy operacyjne - laboratorium
 
-## Opracowanie do kolokwium 1
+> ``#define QUESTION ((bb) || !(bb))``   — Shakespeare
 
-> "#define QUESTION ((bb) || !(bb))"    — Shakespeare
+## Materiały
 
-[Wikipedia](https://pl.wikipedia.org/wiki/C_(j%C4%99zyk_programowania))
+[Starożytny skrypt manuala PL](http://www.linux.pl/man/)
+[Starożytny skrypt manuala EN](http://man7.org/linux/man-pages/dir_all_alphabetic.html)
 
-[...]
+[wazniak.mimuw.edu.pl](http://wazniak.mimuw.edu.pl/index.php?title=Systemy_operacyjne)
 
 ## Spis treści
 
