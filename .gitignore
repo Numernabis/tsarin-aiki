@@ -13,6 +13,8 @@ program
 main
 master
 slave
+server
+client
 
 # Text files
 files
