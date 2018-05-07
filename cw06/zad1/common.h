@@ -14,7 +14,10 @@
 #include <ctype.h>
 #include <time.h>
 
-#define MAX_CLIENTS  16
+#define CRED "\e[91m"
+#define CBLU "\e[96m"
+#define CRST "\e[0m"
+#define MAX_CLIENTS 3
 #define MAX_MSIZE 1024
 #define SERVER_ID 0xCBA
 

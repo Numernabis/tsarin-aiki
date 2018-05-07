@@ -2,8 +2,8 @@
   author: Ludi
   file:   server.c
   start:  07.05.2018
-  end:    []
-  lines:  177
+  end:    07.05.2018
+  lines:  167
 */
 #include "common.h"
 
@@ -35,27 +35,20 @@ int main() {
     }
 
     key_t public_key = ftok(getenv("HOME"), SERVER_ID);
-    if (public_key == -1) {
-        printf("server: generation of public_key failed\n");
-        return 2;
-    }
     queue = msgget(public_key, IPC_CREAT | IPC_EXCL | 0666);
     if (queue == -1) {
         printf("server: creation of public queue failed\n");
         return 2;
     }
+    printf(CBLU"server: started successfully\n"CRST);
 
     struct msqid_ds state;
     Message msg;
     while (1) {
         if (active == 0) {
-            if (msgctl(queue, IPC_STAT, &state) == -1) {
-                printf("server: getting state of public queue failed\n");
-                return 2;
-            }
+            msgctl(queue, IPC_STAT, &state);
             if (state.msg_qnum == 0) break;
         }
-
         if (msgrcv(queue, &msg, MSG_SIZE, 0, 0) < 0) {
             printf("server: receiving message failed\n");
             return 2;
@@ -117,7 +110,7 @@ void handle_mirror(Message* msg) {
 
 void handle_calc(Message* msg) {
     MCREATE
-    char cmd[4096];
+    char cmd[MAX_MSIZE];
     sprintf(cmd, "echo '%s' | bc", msg->mtext);
     FILE* result = popen(cmd, "r");
     fgets(msg->mtext, MAX_MSIZE, result);
@@ -136,7 +129,7 @@ void handle_time(struct Message* msg) {
 }
 
 void handle_end(struct Message* msg) {
-    printf("server: handling END, message: %d\n", msg->spid);
+    printf("server: received END from client %d\n", msg->spid);
     active = 0;
 }
 /* -------------------------------------------------------------------------- */
@@ -162,16 +155,13 @@ int find_queue_id(pid_t spid) {
 
 void close_queue() {
     if (queue > -1) {
-        int tmp = msgctl(queue, IPC_RMID, NULL);
-        if (tmp == -1) {
-            printf("server: there was some error deleting server's queue\n");
-        }
-        printf("server: queue deleted successfully\n");
+        msgctl(queue, IPC_RMID, NULL);
+        printf(CBLU"server: queue deleted successfully\n"CRST);
     }
 }
 
 void handle_sigint(int sig) {
-    printf("server: received signal %d\n", sig);
+    printf(CRED"\nserver: received signal %d\n"CRST, sig);
     exit(2);
 }
 /* -------------------------------------------------------------------------- */

@@ -2,18 +2,18 @@
   author: Ludi
   file:   client.c
   start:  07.05.2018
-  end:    []
-  lines:  131
+  end:    07.05.2018
+  lines:  130
 */
 #include "common.h"
 
 void register_client(key_t);
-int open_queue(char*, int);
-void close_queue();
+int open_public_queue(char*, int);
+void close_private_queue();
 void handle_sigint(int);
 
-int queue = -1;
-int session_id = -2;
+int public_queue = -2;
+int session_id = -1;
 int private_queue = -1;
 
 /* -------------------------------------------------------------------------- */
@@ -23,7 +23,7 @@ int private_queue = -1;
         printf("client: too many characters\n");                               \
 
 #define MSEND(name) {                                                          \
-    if (msgsnd(queue, &msg, MSG_SIZE, 0) == -1)                                \
+    if (msgsnd(public_queue, &msg, MSG_SIZE, 0) == -1)                         \
         printf("client: %s request failed\n", (name));                         \
 }
 
@@ -34,7 +34,7 @@ int private_queue = -1;
 }
 /* -------------------------------------------------------------------------- */
 int main() {
-    if (atexit(close_queue) == -1) {
+    if (atexit(close_private_queue) == -1) {
         printf("client: registering client's atexit failed\n");
         return 2;
     }
@@ -44,7 +44,7 @@ int main() {
     }
 
     char* path = getenv("HOME");
-    queue = open_queue(path, SERVER_ID);
+    public_queue = open_public_queue(path, SERVER_ID);
 
     key_t private_key = ftok(path, getpid());
     private_queue = msgget(private_key, IPC_CREAT | IPC_EXCL | 0666);
@@ -52,7 +52,6 @@ int main() {
         printf("client: creation of private queue failed\n");
         return 2;
     }
-
     register_client(private_key);
 
     char cmd[20];
@@ -97,35 +96,35 @@ void register_client(key_t private_key) {
     msg.spid = getpid();
     sprintf(msg.mtext, "%d", private_key);
 
-    msgsnd(queue, &msg, MSG_SIZE, 0);
+    msgsnd(public_queue, &msg, MSG_SIZE, 0);
     msgrcv(private_queue, &msg, MSG_SIZE, 0, 0);
     sscanf(msg.mtext, "%d", &session_id);
     if (session_id < 0) {
-        printf("client: server cannot have more clients\n");
+        printf(CRED"client: server cannot have more clients\n"CRST);
         exit(2);
     }
-    printf("client: client registered | session id: %d\n", session_id);
+    printf(CBLU"client: client registered | session id: %d\n"CRST, session_id);
 }
 
-int open_queue(char *path, int id) {
+int open_public_queue(char *path, int id) {
     key_t public_key = ftok(path, id);
-    int queue = msgget(public_key, 0);
-    if (queue == -1) {
+    int public_queue = msgget(public_key, 0);
+    if (public_queue == -1) {
         printf("client: opening public queue failed\n");
         return 2;
     }
-    return queue;
+    return public_queue;
 }
 
-void close_queue() {
+void close_private_queue() {
     if (private_queue > -1) {
         msgctl(private_queue, IPC_RMID, NULL);
-        printf("client: private queue deleted successfully\n");
+        printf(CBLU"client: private queue deleted successfully\n"CRST);
     }
 }
 
 void handle_sigint(int sig) {
-    printf("\nclient: received signal %d\n", sig);
+    printf(CRED"\nclient: received signal %d\n"CRST, sig);
     exit(2);
 }
 /* -------------------------------------------------------------------------- */
