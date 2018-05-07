@@ -4,10 +4,10 @@ CFLAGS= -Wall -std=gnu99 -Wextra
 .PHONY: clean
 
 #Default rule
-all: server
+all: client server
 
-#client: client.c
-#	$(CC) -o $@ $< $(CFLAGS)
+client: client.c
+	$(CC) -o $@ $< $(CFLAGS)
 
 server: server.c
 	$(CC) -o $@ $< $(CFLAGS)
