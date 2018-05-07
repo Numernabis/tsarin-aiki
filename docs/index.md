@@ -5,6 +5,7 @@
 ## Materiały
 
 [Starożytny skrypt manuala PL](http://www.linux.pl/man/)
+
 [Starożytny skrypt manuala EN](http://man7.org/linux/man-pages/dir_all_alphabetic.html)
 
 [wazniak.mimuw.edu.pl](http://wazniak.mimuw.edu.pl/index.php?title=Systemy_operacyjne)
