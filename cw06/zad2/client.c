@@ -2,8 +2,8 @@
   author: Ludi
   file:   client.c
   start:  08.05.2018
-  end:    []
-  lines:  []
+  end:    08.05.2018
+  lines:  130
 */
 #include "common.h"
 
@@ -24,22 +24,21 @@ char path[20];
 
 #define MSEND(name) {                                                          \
     if (mq_send(public_queue, (char*) &msg, MSG_SIZE, 0) == -1)                \
-        printf("client: %s request failed\n", (name));                         \
+        printf(CRED"client: %s request failed\n"CRST, (name));                 \
 }
 
 #define MRECEIVE(name) {                                                       \
-    if (mq_receive(private_queue, (char*) &msg, MSG_SIZE, NULL) == -1)         \
-        printf("client: catching %s response failed\n", (name));               \
+    mq_receive(private_queue, (char*) &msg, MSG_SIZE, NULL);                   \
     printf("%s\n", msg.mtext);                                                 \
 }
 /* -------------------------------------------------------------------------- */
 int main() {
     if (atexit(close_private_queue) == -1) {
-        printf("client: registering client's atexit failed\n");
+        printf(CRED"client: registering client's atexit failed\n"CRST);
         return 2;
     }
     if (signal(SIGINT, handle_sigint) == SIG_ERR) {
-        printf("client: registering SIGINT handler failed\n");
+        printf(CRED"client: registering SIGINT handler failed\n"CRST);
         return 2;
     }
 
@@ -52,7 +51,7 @@ int main() {
     sprintf(path, "/%d", getpid());
     private_queue = mq_open(path, O_RDONLY | O_CREAT | O_EXCL, 0666, &attr);
     if (private_queue == -1) {
-        printf("client: creation of private queue failed\n");
+        printf(CRED"client: creation of private queue failed\n"CRST);
         return 2;
     }
     register_client();
