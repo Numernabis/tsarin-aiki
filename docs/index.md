@@ -7,11 +7,12 @@
 [Starożytny skrypt manuala EN](http://man7.org/linux/man-pages/dir_all_alphabetic.html)
 
 ## Spis treści
-1. [Zestaw 1 - biblioteki](## Biblioteki)
-2. [Zestaw 2 - pliki](## Pliki)
-3. [Zestaw 3 - procesy](## Procesy)
-4. [Zestaw 4 - sygnały](## Sygnały)
-5. [Zestaw 5 - strumienie](## Strumienie)
+1. [Zestaw 1 - biblioteki](#biblioteki)
+2. [Zestaw 2 - pliki](#pliki)
+3. [Zestaw 3 - procesy](#procesy)
+4. [Zestaw 4 - sygnały](#sygnały)
+5. [Zestaw 5 - strumienie](#strumienie)
+
 ---
 
 ## Biblioteki
@@ -19,16 +20,14 @@
 ```c
 #include <dlfcn.h>
 void* dlopen(const char *filename, int flag);
-```
-Otwiera bibliotekę, przygotowuje ją do użycia i zwraca wskaźnik/uchwyt na bibliotekę.
-```c
+//twiera bibliotekę, przygotowuje ją do użycia i zwraca wskaźnik/uchwyt na bibliotekę.
+
 void* dlsym(void *handle, char *symbol);
-```
-Przegląda bibliotekę  szukając specyficznego symbolu.
-```c
+//przegląda bibliotekę  szukając specyficznego symbolu.
+
 void dlclose();
+//zamyka bibliotekę.
 ```
-Zamyka bibliotekę.
 ---
 
 ## Pliki
@@ -107,52 +106,61 @@ struct stat {
 #include <unistd.h>
 pid_t fork(void);
 ```
-fork() creates a new process by duplicating the calling process.  The
-  new process is referred to as the child process.  The calling process
-  is referred to as the parent process. The child process and the parent
-  process run in separate memory spaces.
+W momencie jej wywołania tworzony jest nowy proces, będący potomnym dla tego,
+w którym właśnie została wywołana funkcja fork. Jest on kopią procesu
+macierzystego - otrzymuje duplikat obszaru danych, sterty i stosu
+(a więc nie współdzieli danych). Funkcja fork jest wywoływana raz, lecz
+zwraca wartość dwukrotnie - proces potomny otrzymuje wartość 0, a proces
+macierzysty PID nowego procesu. Jest to konieczne nie tylko ze względu na
+możliwość rozróżnienia procesów w kodzie programu: proces macierzysty musi
+otrzymać PID nowego potomka, ponieważ nie istnieje żadna funkcja umożliwiająca
+wylistowanie wszystkich procesów potomnych. W przypadku procesu potomnego nie
+jest konieczne podawanie PID jego procesu macierzystego, ponieważ ten jest
+określony jednoznacznie (i można go wydobyć np. za pomocą funkcji getppid).
+Z kolei 0 jest bezpieczną wartością, ponieważ jest zarezerwowana dla procesu
+demona wymiany i nie ma możliwości utworzenia nowego procesu o takim PID.
+
+Po wywołaniu forka oba procesy (macierzysty i potomny) kontynuują swoje
+działanie (od linii następnej po wywołaniu forka czyli efektem kodu:
 
 ```c
-pid_t getpid(void);
+ pid_t getpid(void) - zwraca PID procesu wywołującego funkcję
+ pid_t getppid(void) - zwraca PID procesu macierzystego
+ uid_t getuid(void) - zwraca rzeczywisty identyfikator użytkownika UID
+ uid_t geteuid(void) - zwraca efektywny identyfikator użytkownika UID
+ gid_t getgid(void) - zwraca rzeczywisty identyfikator grupy GID
+ gid_t getegid(void) - zwraca efektywny identyfikator grupy GID
 ```  
-getpid() returns the process ID (PID) of the calling process.
 
 ```c
 int execl(char const *path, char const *arg0, ...)
-//funkcja jako pierwszy argument przyjmuje ścieżkę do pliku, następne są argumenty wywołania funkcji, gdzie arg0 jest nazwą programu
+//funkcja jako pierwszy argument przyjmuje ścieżkę do pliku,
+//następne są argumenty wywołania funkcji, gdzie arg0 jest nazwą programu
+
 int execle(char const *path, char const *arg0, ..., char const * const *envp)
-//podobnie jak execl, ale pozwala na podanie w ostatnim argumencie tablicy ze zmiennymi środowiskowymi
+//podobnie jak execl, ale pozwala na podanie w ostatnim argumencie
+//tablicy ze zmiennymi środowiskowymi
+
 int execlp(char const *file, char const *arg0, ...)
-//również przyjmuje listę argumentów ale, nie podajemy tutaj ścieżki do pliku, lecz samą jego nazwę, zmienna środowiskowa PATH zostanie przeszukana w celu zlokalizowania pliku
+//również przyjmuje listę argumentów ale, nie podajemy tutaj ścieżki do pliku,
+//lecz samą jego nazwę, zmienna środowiskowa PATH zostanie przeszukana w celu
+//zlokalizowania pliku
+
 int execv(char const *path, char const * const * argv)
 //analogicznie do execl, ale argumenty podawane są w tablicy
+
 int execve(char const *path, char const * const *argv, char const * const *envp)
-//analogicznie do execle, również argumenty przekazujemy tutaj w tablicy tablic znakowych
+//analogicznie do execle, również argumenty przekazujemy
+//tutaj w tablicy tablic znakowych
+
 int execvp(char const *file, char const * const *argv)
+//analogicznie do execlp, argumenty w tablicy
 ```
-The exec() family of functions replaces the current process image
-with a new process image.  The functions described in this manual
-page are front-ends for execve(2).
-The execv(), execvp(), and execvpe() functions provide an array of
-pointers to null-terminated strings that represent the argument list
-available to the new program.  The first argument, by convention,
-should point to the filename associated with the file being executed.
-The array of pointers must be terminated by a null pointer.
 
 ```c
 #include <sys/wait.h>
 pid_t waitpid(pid_t pid, int *stat_loc, int options);
 ```
-The wait() and waitpid() functions shall obtain status information
-pertaining to one of the caller's child processes.
-
-```c
-WEXITSTATUS(stat_val)
-```
-If the value of WIFEXITED(stat_val) is non-zero, this macro
-evaluates to the low-order 8 bits of the status argument that
-the child process passed to \_exit() or exit(), or the value the
-child process returned from main().
 
 ---
 
