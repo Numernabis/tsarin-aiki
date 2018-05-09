@@ -3,7 +3,7 @@
   file:   server.c
   start:  07.05.2018
   end:    07.05.2018
-  lines:  167
+  lines:  171
 */
 #include "common.h"
 
@@ -26,18 +26,18 @@ int cnt = 0;
 /* -------------------------------------------------------------------------- */
 int main() {
     if (atexit(close_queue) == -1) {
-        printf("server: registering server's atexit failed\n");
+        printf(CRED"server: registering server's atexit failed\n"CRST);
         return 2;
     }
     if (signal(SIGINT, handle_sigint) == SIG_ERR) {
-        printf("server: registering SIGINT handler failed\n");
+        printf(CRED"server: registering SIGINT handler failed\n"CRST);
         return 2;
     }
 
     key_t public_key = ftok(getenv("HOME"), SERVER_ID);
     queue = msgget(public_key, IPC_CREAT | IPC_EXCL | 0666);
     if (queue == -1) {
-        printf("server: creation of public queue failed\n");
+        printf(CRED"server: creation of public queue failed\n"CRST);
         return 2;
     }
     printf(CBLU"server: started successfully\n"CRST);
@@ -50,7 +50,7 @@ int main() {
             if (state.msg_qnum == 0) break;
         }
         if (msgrcv(queue, &msg, MSG_SIZE, 0, 0) < 0) {
-            printf("server: receiving message failed\n");
+            printf(CRED"server: receiving message failed\n"CRST);
             return 2;
         }
         switch (msg.mtype) {
@@ -71,12 +71,13 @@ int main() {
 
 #define MSEND(name) {                                                          \
     if (msgsnd(cq_id, msg, MSG_SIZE, 0) == -1) {                               \
-        printf("server: %s response failed\n", (name));                        \
+        printf(CRED"server: %s response failed\n"CRST, (name));                \
         exit(2);                                                               \
     }                                                                          \
 }
 /* -------------------------------------------------------------------------- */
 void handle_login(struct Message* msg) {
+    printf("server: handle  LOGIN for client %d\n", msg->spid);
     key_t cq_key; //client queue key
     sscanf(msg->mtext, "%d", &cq_key);
 
@@ -97,6 +98,7 @@ void handle_login(struct Message* msg) {
 }
 
 void handle_mirror(Message* msg) {
+    printf("server: handle MIRROR for client %d\n", msg->spid);
     MCREATE
     int mlen = (int) strlen(msg->mtext); //message length
     if (msg->mtext[mlen - 1] == '\n') mlen--;
@@ -109,6 +111,7 @@ void handle_mirror(Message* msg) {
 }
 
 void handle_calc(Message* msg) {
+    printf("server: handle   CALC for client %d\n", msg->spid);
     MCREATE
     char cmd[MAX_MSIZE];
     sprintf(cmd, "echo '%s' | bc", msg->mtext);
@@ -119,6 +122,7 @@ void handle_calc(Message* msg) {
 }
 
 void handle_time(struct Message* msg) {
+    printf("server: handle   TIME for client %d\n", msg->spid);
     MCREATE
     char stamp[20];
     time_t rawtime;
@@ -129,7 +133,7 @@ void handle_time(struct Message* msg) {
 }
 
 void handle_end(struct Message* msg) {
-    printf("server: received END from client %d\n", msg->spid);
+    printf("server: signal   END from client %d\n", msg->spid);
     active = 0;
 }
 /* -------------------------------------------------------------------------- */
@@ -137,7 +141,7 @@ void handle_end(struct Message* msg) {
 int create_message(struct Message* msg) {
     int cq_id = find_queue_id(msg->spid);
     if (cq_id == -1) {
-        printf("server: client not found\n");
+        printf(CRED"server: client not found\n"CRST);
         return -1;
     }
     msg->mtype = msg->spid;

@@ -11,5 +11,5 @@ In case of losing motivation:
 | 3  | processes    | :heavy_check_mark: |
 | 4  | signals      | :heavy_check_mark: |
 | 5  | streams      | :heavy_check_mark: |
-| 6  | IPC          | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |
-| 7  |              |    |
+| 6  | IPC queue    | :heavy_check_mark: |
+| 7  | semaphores   | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |

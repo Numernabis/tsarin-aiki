@@ -3,7 +3,7 @@
   file:   client.c
   start:  07.05.2018
   end:    07.05.2018
-  lines:  130
+  lines:  128
 */
 #include "common.h"
 
@@ -24,22 +24,20 @@ int private_queue = -1;
 
 #define MSEND(name) {                                                          \
     if (msgsnd(public_queue, &msg, MSG_SIZE, 0) == -1)                         \
-        printf("client: %s request failed\n", (name));                         \
+        printf(CRED"client: %s request failed\n"CRST, (name));                 \
 }
 
-#define MRECEIVE(name) {                                                       \
-    if (msgrcv(private_queue, &msg, MSG_SIZE, 0, 0) == -1)                     \
-        printf("client: catching %s response failed\n", (name));               \
+#define MRECEIVE                                                               \
+    msgrcv(private_queue, &msg, MSG_SIZE, 0, 0);                               \
     printf("%s\n", msg.mtext);                                                 \
-}
 /* -------------------------------------------------------------------------- */
 int main() {
     if (atexit(close_private_queue) == -1) {
-        printf("client: registering client's atexit failed\n");
+        printf(CRED"client: registering client's atexit failed\n"CRST);
         return 2;
     }
     if (signal(SIGINT, handle_sigint) == SIG_ERR) {
-        printf("client: registering SIGINT handler failed\n");
+        printf(CRED"client: registering SIGINT handler failed\n"CRST);
         return 2;
     }
 
@@ -49,7 +47,7 @@ int main() {
     key_t private_key = ftok(path, getpid());
     private_queue = msgget(private_key, IPC_CREAT | IPC_EXCL | 0666);
     if (private_queue == -1) {
-        printf("client: creation of private queue failed\n");
+        printf(CRED"client: creation of private queue failed\n"CRST);
         return 2;
     }
     register_client(private_key);
@@ -70,16 +68,16 @@ int main() {
             msg.mtype = MIRROR;
             MREAD
             MSEND("MIRROR")
-            MRECEIVE("MIRROR")
+            MRECEIVE
         } else if (strcmp(cmd, "calc") == 0) {
             msg.mtype = CALC;
             MREAD
             MSEND("CALC")
-            MRECEIVE("CALC")
+            MRECEIVE
         } else if (strcmp(cmd, "time") == 0) {
             msg.mtype = TIME;
             MSEND("TIME")
-            MRECEIVE("TIME")
+            MRECEIVE
         } else if (strcmp(cmd, "end") == 0) {
             msg.mtype = END;
             MSEND("END")
@@ -110,7 +108,7 @@ int open_public_queue(char *path, int id) {
     key_t public_key = ftok(path, id);
     int public_queue = msgget(public_key, 0);
     if (public_queue == -1) {
-        printf("client: opening public queue failed\n");
+        printf(CRED"client: opening public queue failed\n"CRST);
         return 2;
     }
     return public_queue;
