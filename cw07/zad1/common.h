@@ -1,0 +1,94 @@
+#ifndef COMMON_H
+#define COMMON_H
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <time.h>
+
+#define CRED "\e[91m"
+#define CBLU "\e[96m"
+#define CRST "\e[0m"
+#define BARBER_ID 0xCBA
+#define MAX_QSIZE 16
+
+enum Bstatus {
+    SLEEP, AWAKEN, READY, IDLE, BUSY
+};
+
+struct BShop {
+    enum Bstatus bstatus;   //barber status
+    int wr_size;            //waiting room size
+    int cnt;                //client count
+    pid_t client;           //currrent client pid
+    pid_t queue[MAX_QSIZE]; //waiting room queue
+} *bshop;
+
+int is_queue_empty() {
+    if (bshop->cnt == 0) return 1;
+    return 0;
+}
+
+int is_queue_full() {
+    if (bshop->cnt >= bshop->wr_size) return 1;
+    return 0;
+}
+
+void enter_queue(pid_t client) {
+    bshop->queue[bshop->cnt] = client;
+    bshop->cnt += 1;
+}
+
+void leave_queue() {
+    for (int i = 0; i < bshop->cnt - 1; i++) {
+        bshop->queue[i] = bshop->queue[i + 1];
+    }
+    bshop->queue[bshop->cnt - 1] = 0;
+    bshop->cnt -= 1;
+}
+
+long time_stamp() {
+    struct timespec stamp;
+    clock_gettime(CLOCK_MONOTONIC, &stamp);
+    return stamp.tv_nsec / 1000;
+}
+
+void print_info(int op, long int time_stamp, int pid) {
+    char* info;
+    switch (op) {
+        case 1: info = "woke up the barber"; break;
+        case 2: info = "entering the queue"; break;
+        case 3: info = "queue is full"; break;
+        case 4: info = "sitted in barber chair"; break;
+        case 5: info = "shaved"; break;
+        default: info = "..."; break;
+    }
+    printf("%ld  ~%d: %s\n", time_stamp, pid, info);
+}
+
+void take_semaphore(int sem_id) {
+    struct sembuf sop;
+    sop.sem_num = 0;
+    sop.sem_op = -1;
+    sop.sem_flg = 0;
+    semop(sem_id, &sop, 1);
+}
+
+void free_semaphore(int sem_id) {
+    struct sembuf sop;
+    sop.sem_num = 0;
+    sop.sem_op = 1;
+    sop.sem_flg = 0;
+    semop(sem_id, &sop, 1);
+}
+
+#endif
