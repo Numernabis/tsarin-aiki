@@ -21,9 +21,8 @@
 #define CRED "\e[91m"
 #define CBLU "\e[96m"
 #define CRST "\e[0m"
-#define BARBER_ID "barbero"
-#define WROOM_ID "wroomero"
-#define FLAGS (IPC_CREAT | 0666)
+#define BARBER_ID "/bb"
+#define WROOM_ID "/wr"
 #define MODE (S_IRWXU | S_IRWXG)
 #define PROT_RW (PROT_READ | PROT_WRITE)
 #define MAX_QSIZE 16

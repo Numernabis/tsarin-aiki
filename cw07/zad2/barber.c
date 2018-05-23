@@ -2,8 +2,8 @@
   author: Ludi
   file:   barber.c
   start:  23.05.2018
-  end:    []
-  lines:  []
+  end:    23.05.2018
+  lines:  116
 */
 #include "common.h"
 
@@ -101,10 +101,8 @@ void shave_client() {
 }
 
 void clean_memory() {
-    sem_close(sem_wr);
-    sem_close(sem_bb);
-    munmap(wroom, sizeof(*wroom));
-    munmap(barber, sizeof(*barber));
+    sem_unlink(WROOM_ID);
+    sem_unlink(BARBER_ID);
     shm_unlink(WROOM_ID);
     shm_unlink(BARBER_ID);
 }

@@ -12,4 +12,5 @@ In case of losing motivation:
 | 4  | signals       | :heavy_check_mark: |
 | 5  | streams       | :heavy_check_mark: |
 | 6  | IPC queues    | :heavy_check_mark: |
-| 7  | IPC shm, sem  | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |
+| 7  | IPC shm, sem  | :heavy_check_mark: |
+| 8  | threads       | [ ] zad1 |

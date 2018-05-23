@@ -2,8 +2,8 @@
   author: Ludi
   file:   barber.c
   start:  18.05.2018
-  end:    []
-  lines:  []
+  end:    23.05.2018
+  lines:  114
 */
 #include "common.h"
 
