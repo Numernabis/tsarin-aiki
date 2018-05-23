@@ -15,6 +15,8 @@
 #include <fcntl.h>
 #include <time.h>
 
+/* WORKING VERSION (with one semaphore) */
+
 #define CRED "\e[91m"
 #define CBLU "\e[96m"
 #define CRST "\e[0m"
