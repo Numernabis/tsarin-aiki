@@ -3,7 +3,7 @@
   file:   barber.c
   start:  18.05.2018
   end:    []
-  lines:  106
+  lines:  []
 */
 #include "common.h"
 
@@ -12,8 +12,8 @@ void shave_client();
 void clean_memory();
 void handle_sigint(int);
 
-int shm_id;
-int sem_id;
+int shm_wr, shm_bb;
+int sem_wr, sem_bb;
 
 /* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
@@ -30,52 +30,56 @@ int main(int argc, char** argv) {
         printf(CRED"registering SIGINT handler failed\n"CRST);
         return 2;
     }
-    int wr_size = atoi(argv[1]);
-    if (wr_size > MAX_QSIZE) {
-        printf(CRED"given waiting_room_size is too big \
+    int capacity = atoi(argv[1]);
+    if (capacity > MAX_QSIZE) {
+        printf(CRED"given waiting_room_capacity is too big \
                     MAX_QSIZE = %d\n"CRST, MAX_QSIZE);
         return 2;
     }
 
-    key_t public_key = ftok(getenv("HOME"), BARBER_ID);
-    shm_id = shmget(public_key, sizeof(struct BShop), S_IRWXU | IPC_CREAT);
-    bshop = shmat(shm_id, 0, 0);
+    key_t key1 = ftok(getenv("HOME"), WROOM_ID);
+    shm_wr = shmget(key1, sizeof(struct WaitingRoom), FLAGS);
+    wroom = shmat(shm_wr, 0, 0);
+    sem_wr = semget(key1, 1, FLAGS);
+    semctl(sem_wr, 0, SETVAL, 1);
 
-    sem_id = semget(public_key, 1, S_IRWXU | IPC_CREAT);
-    semctl(sem_id, 0, SETVAL, 0);
-    free_semaphore(sem_id);
+    key_t key2 = ftok(getenv("HOME"), BARBER_ID);
+    shm_bb = shmget(key2, sizeof(struct Barber), FLAGS);
+    barber = shmat(shm_bb, 0, 0);
+    sem_bb = semget(key2, 1, FLAGS);
+    semctl(sem_bb, 0, SETVAL, 1);
 
-    bshop->bstatus = SLEEP;
-    bshop->wr_size = wr_size;
-    bshop->cnt = 0;
-    bshop->client = 0;
-    for (int i = 0; i < MAX_QSIZE; i++) bshop->queue[i] = 0;
+    barber->status = SLEEP;
+    barber->client = 0;
+    wroom->capacity = capacity;
+    wroom->clients = 0;
+    for (int i = 0; i < MAX_QSIZE; i++) wroom->queue[i] = 0;
     printf(CBLU"---- bshop opened (welcome) ----\n"CRST);
 
-    while(1) {
-        take_semaphore(sem_id);
-        switch (bshop->bstatus) {
+    while (1) {
+        take_semaphore(sem_bb, sem_wr);
+        switch (barber->status) {
             case IDLE:
                 if (is_queue_empty()) {
                     printf("%ld  barber is falling asleep\n", time_stamp());
-                    bshop->bstatus = SLEEP;
+                    barber->status = SLEEP;
                 } else {
                     invite_client();
-                    bshop->bstatus = READY;
+                    barber->status = READY;
                 }
                 break;
             case AWAKEN:
                 printf("%ld  barber force awakens\n", time_stamp());
-                bshop->bstatus = READY;
+                barber->status = READY;
                 break;
             case BUSY:
                 shave_client();
-                bshop->bstatus = READY;
+                barber->status = READY;
                 break;
             default:
                 break;
         }
-        free_semaphore(sem_id);
+        free_semaphore(sem_bb, sem_wr);
     }
 
     return 0;
@@ -83,20 +87,24 @@ int main(int argc, char** argv) {
 /* -------------------------------------------------------------------------- */
 
 void invite_client() {
-    pid_t client = bshop->queue[0];
-    bshop->client = client;
+    pid_t client = wroom->queue[0];
+    barber->client = client;
     printf("%ld  +%d: invited\n", time_stamp(), client);
 }
 
 void shave_client() {
-    printf("%ld  +%d: start\n", time_stamp(), bshop->client);
-    printf("%ld  +%d: finish\n", time_stamp(), bshop->client);
-    bshop->client = 0;
+    printf("%ld  +%d: start\n", time_stamp(), barber->client);
+    printf("%ld  +%d: finish\n", time_stamp(), barber->client);
+    barber->client = 0;
 }
 
 void clean_memory() {
-    if (sem_id != 0) semctl(sem_id, 0, IPC_RMID);
-    if (shm_id != 0) shmctl(shm_id, IPC_RMID, NULL);
+    semctl(sem_wr, 0, IPC_RMID);
+    semctl(sem_bb, 0, IPC_RMID);
+    shmctl(shm_wr, IPC_RMID, NULL);
+    shmctl(shm_bb, IPC_RMID, NULL);
+    shmdt(barber);
+    shmdt(wroom);
 }
 
 void handle_sigint(int signum) {

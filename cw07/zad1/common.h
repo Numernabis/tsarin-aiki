@@ -15,47 +15,50 @@
 #include <fcntl.h>
 #include <time.h>
 
-/* WORKING VERSION (with one semaphore) */
-
 #define CRED "\e[91m"
 #define CBLU "\e[96m"
 #define CRST "\e[0m"
-#define BARBER_ID 0xCBA
+#define BARBER_ID 0xABC
+#define WROOM_ID 0xDEF
+#define FLAGS (IPC_CREAT | 0666)
 #define MAX_QSIZE 16
 
-enum Bstatus {
+enum State {
     SLEEP, AWAKEN, READY, IDLE, BUSY
 };
 
-struct BShop {
-    enum Bstatus bstatus;   //barber status
-    int wr_size;            //waiting room size
-    int cnt;                //client count
+struct Barber {
+    enum State status;      //barber status
     pid_t client;           //currrent client pid
+} *barber;
+
+struct WaitingRoom {
+    int clients;            //number of clients
+    int capacity;           //waiting room capacity
     pid_t queue[MAX_QSIZE]; //waiting room queue
-} *bshop;
+} *wroom;
 
 int is_queue_empty() {
-    if (bshop->cnt == 0) return 1;
+    if (wroom->clients == 0) return 1;
     return 0;
 }
 
 int is_queue_full() {
-    if (bshop->cnt >= bshop->wr_size) return 1;
+    if (wroom->clients >= wroom->capacity) return 1;
     return 0;
 }
 
 void enter_queue(pid_t client) {
-    bshop->queue[bshop->cnt] = client;
-    bshop->cnt += 1;
+    wroom->queue[wroom->clients] = client;
+    wroom->clients += 1;
 }
 
 void leave_queue() {
-    for (int i = 0; i < bshop->cnt - 1; i++) {
-        bshop->queue[i] = bshop->queue[i + 1];
+    for (int i = 0; i < wroom->clients - 1; i++) {
+        wroom->queue[i] = wroom->queue[i + 1];
     }
-    bshop->queue[bshop->cnt - 1] = 0;
-    bshop->cnt -= 1;
+    wroom->queue[wroom->clients - 1] = 0;
+    wroom->clients -= 1;
 }
 
 long time_stamp() {
@@ -77,20 +80,22 @@ void print_info(int op, long int time_stamp, int pid) {
     printf("%ld  ~%d: %s\n", time_stamp, pid, info);
 }
 
-void take_semaphore(int sem_id) {
+void smf(int sem_id, int op) {
     struct sembuf sop;
     sop.sem_num = 0;
-    sop.sem_op = -1;
+    sop.sem_op = op;
     sop.sem_flg = 0;
     semop(sem_id, &sop, 1);
 }
 
-void free_semaphore(int sem_id) {
-    struct sembuf sop;
-    sop.sem_num = 0;
-    sop.sem_op = 1;
-    sop.sem_flg = 0;
-    semop(sem_id, &sop, 1);
+void take_semaphore(int sem1, int sem2) {
+    if (sem1 != 0) smf(sem1, -1);
+    if (sem2 != 0) smf(sem2, -1);
+}
+
+void free_semaphore(int sem1, int sem2) {
+    if (sem1 != 0) smf(sem1, 1);
+    if (sem2 != 0) smf(sem2, 1);
 }
 
 #endif
