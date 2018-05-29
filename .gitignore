@@ -18,6 +18,7 @@ client
 barber
 clients
 
-# Text files
+# Text files & images
 files
 *.txt
+*.pgm
