@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  29.05.2018
-  end:    []
-  lines:  []
+  end:    06.06.2018
+  lines:  150
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,9 +138,11 @@ int main(int argc, char** argv) {
     unsigned long ms = (end.tv_sec - start.tv_sec) * 1000000
                      + (end.tv_nsec - start.tv_nsec) / 1000;
     FILE *fp = fopen("Times.txt", "a");
-    fprintf(fp, "|  %dx%-4d |   %dx%-4d |  %-12d |  %-15lu |\n",
-        image.w, image.h, filter.c, filter.c, threads_num, ms);
+    char* p = filter.c < 10 ? "  " : " ";
+    fprintf(fp, "|  %dx%-4d | %s%dx%-2d   |      %-8d |     %-12lu |\n",
+        image.w, image.h, p, filter.c, filter.c, threads_num, ms);
     fclose(fp);
+    printf("\e[1;36mThreads: %-2d  Time: %-lu\n\n\e[0m", threads_num, ms);
 
     free(threads);
     save_image(image, output_path);

@@ -20,5 +20,5 @@ clients
 
 # Text files & images
 files
-*.txt
-*.pgm
+Tadeusz.txt
+config.txt
