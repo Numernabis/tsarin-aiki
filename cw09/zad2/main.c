@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  05.06.2018
-  end:    []
-  lines:  163
+  end:    06.06.2018
+  lines:  166
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +26,7 @@ char** buffer;
 int wpos = 0, rpos = 0, fin = 0;
 pthread_t* threads;
 sem_t* sem;
-// 0..N-1 - buff, N - wcond, N+1 - rcond, N+2 - buff available
+// 0..N-1 - buff, N - availability, N+1 - rcond, N+2 - wcond
 
 /* -------------------------------------------------------------------------- */
 void handle_signal(int signum) {
@@ -67,8 +67,8 @@ void* producer(void* just_a_pointer) {
         sem_wait(&sem[N]);
         sem_wait(&sem[N + 2]);
 
-        if (verbose) printf(PRO"lock sem[%d]\n"RST, pnum, wpos);
         sem_wait(&sem[wpos]);
+        if (verbose) printf(PRO"lock sem[%d]\n"RST, pnum, wpos);
         sem_post(&sem[N]);
 
         buffer[wpos] = malloc((strlen(line) + 1) * sizeof(char));
@@ -97,8 +97,8 @@ void* consumer(void* just_a_pointer) {
             sem_wait(&sem[N + 1]);
         }
 
-        if (verbose) printf(CON"lock sem[%d]\n"RST, cnum, rpos);
         sem_wait(&sem[rpos]);
+        if (verbose) printf(CON"lock sem[%d]\n"RST, cnum, rpos);
 
         char* line = buffer[rpos];
         buffer[rpos] = NULL;

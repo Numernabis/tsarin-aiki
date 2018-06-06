@@ -2,8 +2,8 @@
   author: Ludi
   file:   main.c
   start:  05.06.2018
-  end:    []
-  lines:  169
+  end:    06.06.2018
+  lines:  171
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@
 #define CON "\e[1;35mConsumer[%ld]: "
 #define PRO "\e[1;36mProducer[%ld]: "
 #define YEL "\e[1;33m"
-#define RES "\e[0m"
+#define RST "\e[0m"
 
 int P, K, N, L, search_mode, verbose, nk;
 char file_name[FILENAME_MAX], sign;
@@ -29,7 +29,7 @@ pthread_cond_t wcond, rcond;
 
 /* -------------------------------------------------------------------------- */
 void handle_signal(int signum) {
-    fprintf(stderr, "\nReceived SIGINT -- cancelling threads\n");
+    printf(YEL"\nReceived SIG=%d -- cancelling threads\n"RST, signum);
     for (int i = 0; i < (P + K); i++)
         pthread_cancel(threads[i]);
     exit(EXIT_SUCCESS);
@@ -44,7 +44,7 @@ void load_config(char* config_file_name) {
     fscanf(config, "%d\n%d\n%d\n%s\n%d\n%d\n%d\n%d",
         &P, &K, &N, file_name, &L, &search_mode, &verbose, &nk);
     printf(YEL"CONFIG >> P = %d   K = %d   N = %d   file_name = %s\n"
-        "\t  L = %d   search_mode = %d   verbose = %d   nk = %d\n"RES,
+        "\t  L = %d   search_mode = %d   verbose = %d   nk = %d\n"RST,
         P, K, N, file_name, L, search_mode, verbose, nk);
     printf("---------------------------------------------------------\n");
     fclose(config);
@@ -59,66 +59,67 @@ int compare(int length) {
 /* -------------------------------------------------------------------------- */
 void* producer(void* just_a_pointer) {
     long int pnum = pthread_self();
-    if (verbose) fprintf(stderr, PRO"started work\n"RES, pnum);
+    if (verbose) printf(PRO"started work\n"RST, pnum);
     char line[LINE_MAX];
     while (fgets(line, LINE_MAX, source) != NULL) {
-        if (verbose) fprintf(stderr, PRO"loaded text line\n"RES, pnum);
+        if (verbose) printf(PRO"loaded text line\n"RST, pnum);
         pthread_mutex_lock(&mutex[N]);
         while (buffer[wpos] != NULL)
             pthread_cond_wait(&wcond, &mutex[N]);
 
-        if (verbose) fprintf(stderr, PRO"lock mutex[%d]\n"RES, pnum, wpos);
         pthread_mutex_lock(&mutex[wpos]);
+        if (verbose) printf(PRO"lock mutex[%d]\n"RST, pnum, wpos);
         pthread_mutex_unlock(&mutex[N]);
 
         buffer[wpos] = malloc((strlen(line) + 1) * sizeof(char));
         strcpy(buffer[wpos], line);
-        if (verbose) fprintf(stderr, PRO"copied line to buffer[%d]\n"RES, pnum, wpos);
+        if (verbose) printf(PRO"copied line to buffer[%d]\n"RST, pnum, wpos);
 
         pthread_cond_broadcast(&rcond);
         pthread_mutex_unlock(&mutex[wpos]);
-        if (verbose) fprintf(stderr, PRO"unlock mutex[%d]\n"RES, pnum, wpos);
+        if (verbose) printf(PRO"unlock mutex[%d]\n"RST, pnum, wpos);
         wpos = (wpos + 1) % N;
     }
-    if (verbose) fprintf(stderr, PRO"finished work\n"RES, pnum);
+    if (verbose) printf(PRO"finished work\n"RST, pnum);
     return NULL;
 }
 
 void* consumer(void* just_a_pointer) {
     long int cnum = pthread_self();
-    if (verbose) fprintf(stderr, CON"started work\n"RES, cnum);
+    if (verbose) printf(CON"started work\n"RST, cnum);
     while (1) {
         pthread_mutex_lock(&mutex[N + 1]);
         while (buffer[rpos] == NULL) {
             if (fin) {
                 pthread_mutex_unlock(&mutex[N + 1]);
-                if (verbose) fprintf(stderr, CON"finished work\n"RES, cnum);
+                if (verbose) printf(CON"finished work\n"RST, cnum);
                 return NULL;
             }
             pthread_cond_wait(&rcond, &mutex[N + 1]);
         }
 
-        if (verbose) fprintf(stderr, CON"lock mutex[%d]\n"RES, cnum, rpos);
         pthread_mutex_lock(&mutex[rpos]);
-        pthread_mutex_unlock(&mutex[N + 1]);
+        if (verbose) printf(CON"lock mutex[%d]\n"RST, cnum, rpos);
 
         char* line = buffer[rpos];
         buffer[rpos] = NULL;
         int length = (int) strlen(line);
-        if (verbose) fprintf(stderr, CON"read line from buffer[%d]\n"RES, cnum, rpos);
+        if (verbose) printf(CON"read line from buffer[%d]\n"RST, cnum, rpos);
 
         pthread_cond_broadcast(&wcond);
+        pthread_mutex_unlock(&mutex[N + 1]);
         pthread_mutex_unlock(&mutex[rpos]);
-        if (verbose) fprintf(stderr, CON"unlock mutex[%d]\n"RES, cnum, rpos);
+        if (verbose) printf(CON"unlock mutex[%d]\n"RST, cnum, rpos);
 
         if (compare(length)) {
-            fprintf(stderr, CON"found line with length %d %c %d\n"RES,
+            printf(CON"found line with length %d %c %d\n"RST,
                 cnum, length, sign, L);
-            fprintf(stderr, "%s\n", line);
+            printf("%s\n", line);
         }
         rpos = (rpos + 1) % N;
     }
 }
+
 /* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -131,8 +132,9 @@ int main(int argc, char** argv) {
         printf("Failed to open text source file :(\n");
         return 2;
     }
-
     signal(SIGINT, handle_signal);
+    if (nk > 0) signal(SIGALRM, handle_signal);
+
     buffer  = malloc(     N  * sizeof(char*));
     threads = malloc((P + K) * sizeof(pthread_t));
     mutex   = malloc((N + 2) * sizeof(pthread_mutex_t));
@@ -148,7 +150,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < K; i++)
         pthread_create(&(threads[P + i]), NULL, consumer, NULL);
 
-    if (nk > 0) sleep(nk);
+    if (nk > 0) alarm(nk);
     for (int i = 0; i < P; i++)
         pthread_join(threads[i], NULL);
     fin = 1;

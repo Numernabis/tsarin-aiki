@@ -1,6 +1,6 @@
 #Define variables
 CC= gcc
-CFLAGS= -Wall -std=gnu99 -lpthread -lrt
+CFLAGS= -Wall -std=gnu99 -lpthread
 .PHONY: clean
 
 #Default rule
