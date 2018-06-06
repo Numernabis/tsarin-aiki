@@ -13,4 +13,6 @@ In case of losing motivation:
 | 5  | streams       | :heavy_check_mark: |
 | 6  | IPC queues    | :heavy_check_mark: |
 | 7  | IPC shm, sem  | :heavy_check_mark: |
-| 8  | threads       | [ ] zad1 |
+| 8  | threads       | :heavy_check_mark: |
+| 9  | mutexes       | :heavy_check_mark: |
+| 10 | sockets       | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |
