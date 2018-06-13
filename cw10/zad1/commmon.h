@@ -20,20 +20,21 @@
 #define MAX_PATH 104
 #define MAX_EVENTS 5
 #define MAX_CLIENTS 10
-//#define READ_SIZE 2
-
-//#define _BSD_SOURCE
-//#define _SVID_SOURCE
 
 #define SUM 0
 #define SUB 1
 #define MUL 2
 #define DIV 3
 
-#define EVAL 1
-#define RESULT 2
-#define PING 3
+#define TASK  1
+#define REPLY 2
+#define PINGU 3
 #define LOGIN 4
+
+#define RED "\e[1;31m"
+#define GRE "\e[1;32m"
+#define YEL "\e[1;33m"
+#define RST "\e[0m"
 
 typedef struct Client{
     char name[MAX_NAME];

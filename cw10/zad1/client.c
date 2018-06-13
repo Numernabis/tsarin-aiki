@@ -3,7 +3,7 @@
   file:   client.c
   start:  12.06.2018
   end:    []
-  lines:  125
+  lines:  123
 */
 #include "commmon.h"
 
@@ -16,7 +16,7 @@ int socketd;
 
 /* -------------------------------------------------------------------------- */
 void handle_signal(int signum) {
-    printf("\nReceived SIG=%d -- closing\n", signum);
+    printf(RED"\nReceived SIG=%d -- closing\n"RST, signum);
     exit(EXIT_SUCCESS);
 }
 
@@ -57,17 +57,15 @@ void calc(expr e, int id) {
     msg m;
     strcpy(m.name, client_name);
     m.mid = id;
-    m.type = RESULT;
+    m.type = REPLY;
     m.expr.arg1 = ans;
     write(socketd, &m, sizeof(m));
 }
 /* -------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
     if (argc < 4) {
-        printf("Invalid program call. Proper arguments as follows:\n");
-        printf("./main  client_name  mode  address  (port)\n");
+        printf(YEL"Invalid program call. Proper arguments as follows:\n");
+        printf("./main  client_name  mode  address  (port)\n"RST);
         return 2;
     }
     signal(SIGINT, handle_signal);
@@ -84,7 +82,7 @@ int main(int argc, char** argv) {
         port_num = (unsigned short) strtoul(argv[4], NULL, 0);
         socketd = init_inet_socket();
     } else {
-        printf("Invalid mode. Available: local, inet\n");
+        printf(YEL"Invalid mode. Available: local, inet\n"RST);
         return 2;
     }
 
@@ -99,23 +97,23 @@ int main(int argc, char** argv) {
         msg m;
         ssize_t bytes_read = recv(socketd, &m, sizeof(m), MSG_WAITALL);
         if (bytes_read == 0) {
-            printf("probably server caput\n");
+            printf(RED"probably server caput\n"RST);
             fflush(stdout);
             exit(0);
         }
         switch (m.type) {
-            case PING:
-                printf("pong!\n");
+            case PINGU:
+                printf(GRE"pongu!\n"RST);
                 fflush(stdout);
                 write(socketd, &m, sizeof(m));
                 break;
-            case EVAL:
-                printf("task received\n");
+            case TASK:
+                printf(YEL"task received\n"RST);
                 fflush(stdout);
                 calc(m.expr, m.mid);
                 break;
             case LOGIN:
-                printf("there is already client with that name!\n");
+                printf(RED"client_name is occupied!\n"RST);
                 exit(1);
         }
     }

@@ -3,7 +3,7 @@
   file:   server.c
   start:  12.06.2018
   end:    []
-  lines:  260
+  lines:  256
 */
 #include "commmon.h"
 
@@ -15,7 +15,7 @@ pthread_t event_thread, ping_thread;
 
 /* -------------------------------------------------------------------------- */
 void handle_signal(int signum) {
-    printf("\nReceived SIG=%d -- closing\n", signum);
+    printf(RED"\nReceived SIG=%d -- closing\n"RST, signum);
     exit(EXIT_SUCCESS);
 }
 
@@ -67,12 +67,13 @@ void add_client(struct epoll_event ee) {
             struct sockaddr new_addr;
             socklen_t new_addr_len = sizeof(new_addr);
             clients[i].fd = accept(ee.data.fd, &new_addr, &new_addr_len);
+
             struct epoll_event e;
             e.events = EPOLLIN | EPOLLET;
             e.data.fd = clients[i].fd;
 
             if (epoll_ctl(epolld, EPOLL_CTL_ADD, clients[i].fd, &e) < 0) {
-                printf("cannot create epoll fd for client %d.\n", e.data.fd);
+                printf(YEL"cannot create epolld for client %d\n"RST, e.data.fd);
                 fflush(stdout);
                 clients[i].pings = -1;
             }
@@ -102,18 +103,18 @@ void handle_response(struct epoll_event ee) {
     msg m;
     ssize_t bytes_read = read(ee.data.fd, &m, sizeof(m));
     if (bytes_read == 0) {
-        printf("ending connection with client %d\n", ee.data.fd);
+        printf(YEL"ending connection with client %d\n"RST, ee.data.fd);
         fflush(stdout);
         close_connection(ee);
         return;
     }
 
     switch (m.type) {
-        case RESULT:
-            printf("expr%d, client %s, result: %d\n", m.mid, m.name, m.expr.arg1);
+        case REPLY:
+            printf(GRE"expr %d, client %s, answer: %d\n"RST, m.mid, m.name, m.expr.arg1);
             fflush(stdout);
             return;
-        case PING:
+        case PINGU:
             pthread_mutex_lock(&mtx);
             clients[m.mid].pings = 0;
             pthread_mutex_unlock(&mtx);
@@ -130,7 +131,7 @@ void handle_response(struct epoll_event ee) {
             }
             for (int i = 0; i < MAX_CLIENTS; i++) {
                 if (clients[i].pings >= 0 && ee.data.fd == clients[i].fd) {
-                    printf("starting connection with client %d - %s.\n", ee.data.fd, m.name);
+                    printf(GRE"starting connection with client %d - %s.\n"RST, ee.data.fd, m.name);
                     fflush(stdout);
                     strcpy(clients[i].name, m.name);
                     pthread_mutex_unlock(&mtx);
@@ -151,10 +152,10 @@ void* event(void* args) {
         int counter = epoll_wait(epolld, ee, MAX_EVENTS, -1);
         for (int i = 0; i < counter; i++) {
             if (ee[i].data.fd == local) {
-                printf("local client is waiting to be added.\n");
+                printf(YEL"local client is waiting to be added.\n"RST);
                 add_client(ee[i]);
             } else if (ee[i].data.fd == inet) {
-                printf("inet client is waiting to be added.\n");
+                printf(YEL"inet client is waiting to be added.\n"RST);
                 add_client(ee[i]);
             } else {
                 handle_response(ee[i]);
@@ -166,7 +167,7 @@ void* event(void* args) {
 void* ping(void* args) {
     while(1) {
         msg m;
-        m.type = PING;
+        m.type = PINGU;
         pthread_mutex_lock(&mtx);
         for (int i = 0; i < MAX_CLIENTS; i++) {
             if (clients[i].pings == 0) {
@@ -192,8 +193,8 @@ void* ping(void* args) {
 /* -------------------------------------------------------------------------- */
 int main(int argc, char** argv) {
     if (argc != 3) {
-        printf("Invalid program call. Proper arguments as follows:\n");
-        printf("./main  port_num  socket_path\n");
+        printf(YEL"Invalid program call. Proper arguments as follows:\n");
+        printf("./main  port_num  socket_path\n"RST);
         return 2;
     }
     signal(SIGINT, handle_signal);
@@ -201,16 +202,13 @@ int main(int argc, char** argv) {
 
     unsigned short port_num = (unsigned short) strtoul(argv[1], NULL, 0);
     socket_path = argv[2];
-    //printf("%ud, %s", port_num, socket_path);
 
     init_inet_socket(port_num);
     init_local_socket(socket_path);
     init_epoll();
-
     pthread_mutex_init(&mtx, NULL);
     pthread_create(&event_thread, NULL, event, NULL);
     pthread_create(&ping_thread, NULL, ping, NULL);
-
     /* ---------------------------------------------------------------------- */
     int z = 0;
     while (1) {
@@ -221,14 +219,14 @@ int main(int argc, char** argv) {
         int res = scanf("%d %c %d", &arg1, &s, &arg2);
         if (res != 3) {
             while((c = getchar()) != '\n' && c != EOF);
-            printf("give three arguments! \n");
+            printf(YEL"give three arguments! \n"RST);
             continue;
         }
         msg m;
         m.expr.arg1 = arg1;
         m.expr.arg2 = arg2;
         m.mid = z++;
-        m.type = EVAL;
+        m.type = TASK;
 
         switch (s) {
             case '+': m.expr.type = SUM; break;
