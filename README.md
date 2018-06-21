@@ -15,4 +15,4 @@ In case of losing motivation:
 | 7  | IPC shm, sem  | :heavy_check_mark: |
 | 8  | threads       | :heavy_check_mark: |
 | 9  | mutexes       | :heavy_check_mark: |
-| 10 | sockets       | <ul><li>[ ] zad1</li><li>[ ] zad2</li></ul> |
+| 10 | sockets       | :heavy_check_mark: |
