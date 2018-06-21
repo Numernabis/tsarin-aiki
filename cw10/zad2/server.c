@@ -2,8 +2,8 @@
   author: Ludi
   file:   server.c
   start:  18.06.2018
-  end:    []
-  lines:  228
+  end:    21.06.2018
+  lines:  227
 */
 #include "commmon.h"
 
@@ -20,7 +20,6 @@ void handle_signal(int signum) {
 }
 
 void clean_up(void) {
-    // send message to clients (inform about closing)
     pthread_mutex_destroy(&mtx);
     close(epolld); close(inet); close(local);
     remove(socket_path);

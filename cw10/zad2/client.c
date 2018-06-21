@@ -2,7 +2,7 @@
   author: Ludi
   file:   client.c
   start:  18.06.2018
-  end:    []
+  end:    21.06.2018
   lines:  124
 */
 #include "commmon.h"

@@ -2,7 +2,7 @@
   author: Ludi
   file:   server.c
   start:  12.06.2018
-  end:    []
+  end:    21.06.2018
   lines:  256
 */
 #include "commmon.h"
